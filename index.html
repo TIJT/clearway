@@ -269,6 +269,27 @@ body.text-large main,body.text-large .modal{zoom:1.1}body.text-xl main,body.text
 a.gi{text-decoration:none;color:inherit}
 select.gselect{appearance:none;-webkit-appearance:none;border:0!important;background:transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%2371877E' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 8l3-3 3 3M7 12l3 3 3-3'/%3E%3C/svg%3E") no-repeat right 0 center/15px!important;padding:8px 20px 8px 6px!important;max-width:62%;color:var(--ink-3)!important;font-weight:400;text-align:right;text-align-last:right;font-size:15px}
 .qa-list{display:flex;flex-direction:column;gap:8px}
+.tour{position:fixed;inset:0;z-index:95;background:var(--bg);display:flex;flex-direction:column;padding:calc(10px + env(safe-area-inset-top,0px)) max(18px,env(safe-area-inset-right,0px)) calc(14px + env(safe-area-inset-bottom,0px)) max(18px,env(safe-area-inset-left,0px));touch-action:pan-y}
+.tour-top{display:flex;justify-content:space-between;align-items:center}
+.tour-count{color:var(--ink-3);font-size:13px;font-weight:500}
+.tour-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:12px;max-width:440px;margin:0 auto;width:100%;overflow:auto}
+.tour-body h2{font-size:26px}
+.tour-b{margin:0;font-size:16.5px;line-height:1.5;color:var(--ink)}
+.tour-note{margin:0;font-size:14px;color:var(--ink-2);background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;line-height:1.45}
+.tour-art{position:relative;width:132px;height:132px;display:flex;align-items:center;justify-content:center;margin-bottom:6px}
+.tour-ring{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--c) 22%,transparent),color-mix(in srgb,var(--c) 6%,transparent) 70%)}
+.tour-ic{position:relative;width:76px;height:76px;border-radius:22px;background:var(--c);display:flex;align-items:center;justify-content:center;box-shadow:0 10px 30px color-mix(in srgb,var(--c) 40%,transparent)}
+.tour-ic svg{width:40px;height:40px}
+.tour-go{margin-top:4px;color:var(--accent);border-color:var(--accent-soft);background:var(--accent-soft)}
+.tour-end{display:flex;flex-direction:column;gap:8px;width:100%;max-width:320px;margin-top:6px}
+.tour-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;max-width:440px;margin:0 auto;width:100%}
+.tour-foot .btn{min-width:72px}.tour-foot .btn:disabled{visibility:hidden}
+.tour-dots{display:flex;gap:7px}
+.tour-dot{all:unset;cursor:pointer;width:8px;height:8px;border-radius:99px;background:var(--line);transition:width .2s,background .2s}
+.tour-dot[aria-current="true"]{width:22px;background:var(--accent)}
+.tour-dot:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion:no-preference){.tour-body{animation:tourin .25s ease-out}@keyframes tourin{from{transform:translateX(12px)}to{transform:none}}}
+.tour-offer{display:flex;align-items:center;gap:12px;padding:14px 16px}
 .qa{all:unset;cursor:pointer;display:flex;align-items:center;gap:14px;padding:12px;border-radius:14px;background:var(--surface);border:1px solid var(--line)}
 .qa .gsub{color:var(--ink-2)}
 .qa:focus-visible{outline:2px solid var(--accent)}
@@ -498,7 +519,7 @@ function blank(){
       {id:"g-fun",name:"Nice to have",essential:false,cats:[{id:"c-eat",name:"Eating out"},{id:"c-subs",name:"Subscriptions"},{id:"c-fun",name:"Fun money"}]},
     ],months:{}},
     txns:[],
-    fund:{name:"Emergency fund",targetMode:"months",months:3,fixed:1000,entries:[]}
+    fund:{name:"Emergency fund",targetMode:"fixed",months:3,fixed:1000,entries:[]}
   };
 }
 function example(){
@@ -633,7 +654,7 @@ function essentialsMonthly(){
   const ess=sum(S.budget.groups.filter(g=>g.essential).flatMap(g=>g.cats),c=>m.assigned[c.id]||0);
   return ess+sum(activeDebts(),d=>d.min);
 }
-const fundTarget=()=>S.fund.targetMode==="fixed"?(+S.fund.fixed||0):round2(essentialsMonthly()*(+S.fund.months||3));
+const fundTarget=()=>S.fund.targetMode==="fixed"||essentialsMonthly()<=0?(+S.fund.fixed||0):round2(essentialsMonthly()*(+S.fund.months||3));
 function fundMonthly(){const m=ensureMonth(monthKey());return +m.assigned.fund||0}
 
 /* ---------- persistence ---------- */
@@ -826,6 +847,7 @@ function vOverview(){
   const nextCard=ns&&ns.amount>0?(()=>{const d=ns.debt,dt=nextDueDate(d);return `<section class="panel nextcard"><span class="nc-ic">${I.debts}</span><div class="nc-main"><div class="label">Next step</div><div class="nc-t">Pay ${money(ns.amount)} to ${esc(d.name)}</div><div class="muted">Due ${dt.getDate()} ${MONTHS[dt.getMonth()]}</div></div><button class="btn primary" data-action="pay-debt" data-id="${d.id}" data-amount="${ns.amount}">Pay</button></section>`})():"";
   return `${topbar("Overview",`${MONTHS_L[new Date().getMonth()]} ${new Date().getFullYear()}`,`${headIcons()}<button class="btn desk-only" data-action="add-debt">Add debt</button><button class="btn primary desk-only" data-action="log-payment">Log payment</button>`)}
   ${exampleBanner()}
+  ${tourSeen()?"":`<section class="panel tour-offer"><span class="nc-ic">${I.overview}</span><div class="nc-main"><div class="nc-t">New to Clearway?</div><div class="muted">A one-minute tour of the app.</div></div><button class="btn primary small" data-action="start-tour">Take the tour</button><button class="iconbtn" data-action="dismiss-tour" aria-label="No thanks">✕</button></section>`}
   <div class="grid g-hero">
     <div class="grid" style="gap:inherit;align-content:start">
     <section class="panel hero">
@@ -1049,14 +1071,17 @@ function vFund(){
       ${pts.length||proj.length?lineChart([{points:tgtLine,color:"var(--ink-3)",dash:true,width:1.5},{points:pts,color:"var(--fund)",fill:true,end:true},{points:proj,color:"var(--fund)",dash:true,width:2,end:true}],{marker:nowIdx(),h:240,w:400}):`<div class="empty"><p>Add money to start the chart.</p></div>`}
       ${proj.length?`<div class="muted" style="margin-top:6px">Dashed: ${Math.min(eta.n,36)} months at ${money(mo,{whole:true})} a month${eta.n<=36?`, reaching your target in ${mLabel(eta.idx,true)}`:""}${eta.n>36?`. You reach the target in ${mLabel(eta.idx,true)}`:""}.</div>`:""}</section>
   </div>
-  <section class="panel">
-    <div class="panel-head"><h2>Target and top-up</h2></div>
-    <div class="form-grid" style="grid-template-columns:repeat(3,minmax(0,1fr))">
-      <div class="field"><label for="fund-target">Target</label><select id="fund-target" data-action="fund-target">${[1,3,6,9,12].map(n=>`<option value="m${n}" ${f.targetMode==="months"&&+f.months===n?"selected":""}>${n} month${n>1?"s":""} of essentials (${money(n*ess,{whole:true})})</option>`).join("")}<option value="fixed" ${f.targetMode==="fixed"?"selected":""}>A fixed amount</option></select></div>
-      ${f.targetMode==="fixed"?`<div class="field"><label for="fund-fixed">Target amount</label><div class="money-in"><span>${esc(curSymbol())}</span><input id="fund-fixed" inputmode="decimal" value="${f.fixed}" data-action="fund-fixed"></div></div>`:""}
-      <div class="field"><label for="fund-monthly">Monthly top-up</label><div class="money-in"><span>${esc(curSymbol())}</span><input id="fund-monthly" inputmode="decimal" value="${mo}" data-action="fund-monthly"></div><div class="muted" id="fund-eta">${etaText(b,t,mo)}</div></div>
+  <section class="panel fund-setup" id="fund-setup">
+    <div class="panel-head"><h2>Your target</h2>${S.fund.entries.length?"":`<button class="btn small" data-action="fund-add" data-note="Starting balance">Add what you've saved</button>`}</div>
+    <div class="field"><label for="fund-target-amt">How much do you want in your fund?</label>
+      <div class="money-in huge"><span>${esc(curSymbol())}</span><input id="fund-target-amt" inputmode="decimal" value="${Math.round(t).toLocaleString()}" data-action="fund-target-amt" autocomplete="off"></div></div>
+    <div class="label" style="margin-top:14px">Or pick a suggestion</div>
+    <div class="chips" style="margin-top:8px">
+      <button class="chip" aria-pressed="${f.targetMode==="fixed"&&+f.fixed===1000}" data-action="fund-pick" data-v="starter">Starter <small>${money(1000,{whole:true})}</small></button>
+      ${ess>0?[1,3,6].map(n=>`<button class="chip" aria-pressed="${f.targetMode==="months"&&+f.months===n}" data-action="fund-pick" data-v="m${n}">${n} month${n>1?"s":""} <small>${money(n*ess,{whole:true})}</small></button>`).join(""):""}
     </div>
-    <div class="muted" style="margin-top:12px;max-width:70ch">Essentials are your Bills and Everyday categories plus debt minimums. Three months is the usual first goal, or six if your income varies. While you're clearing high-interest debt, a starter fund of one month is a sensible stop.</div>
+    <div class="muted" style="margin-top:8px;max-width:70ch">${ess>0?`Your essentials come to ${money(ess,{whole:true})} a month (Bills and Everyday categories plus debt minimums). ${f.targetMode==="months"?`Your target follows ${f.months} month${f.months>1?"s":""} of them, so it updates when your budget changes.`:"Three months is a common goal, or six if your income varies."}`:"Fill in your budget and Clearway will suggest targets based on what your essentials cost each month."}</div>
+    <div class="field" style="margin-top:18px;max-width:320px"><label for="fund-monthly">How much will you add each month?</label><div class="money-in"><span>${esc(curSymbol())}</span><input id="fund-monthly" inputmode="decimal" value="${mo}" data-action="fund-monthly"></div><div class="muted" id="fund-eta">${etaText(b,t,mo)}</div></div>
   </section>
   <section class="panel"><div class="panel-head"><h2>History</h2></div><div class="list">${entries.length?entries.map(e=>activityRow({kind:"fund",...e})).join(""):`<p class="muted">Deposits and withdrawals show here.</p>`}</div></section>`;
 }
@@ -1072,7 +1097,7 @@ function vActivity(){
 const CHEV='<svg class="chev" viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 5l5 5-5 5"/></svg>';
 const toggle=(id,on,action,label)=>`<button class="switch" role="switch" aria-checked="${!!on}" aria-label="${esc(label)}" id="${id}" data-action="${action}"><span></span></button>`;
 const P={lock:'<rect x="5" y="9" width="10" height="8" rx="2"/><path d="M7 9V6.5a3 3 0 0 1 6 0V9"/>',eye:'<path d="M2 10s3-5 8-5 8 5 8 5-3 5-8 5-8-5-8-5z"/><circle cx="10" cy="10" r="2.2"/>',phone:'<rect x="6" y="2.5" width="8" height="15" rx="2"/><path d="M9 15h2"/>',shield:'<path d="M10 2.5 16 5v4.5c0 4-2.7 6.5-6 7.5-3.3-1-6-3.5-6-7.5V5z"/>',home:'<path d="M3 9.5 10 4l7 5.5V17H3z"/>',moon:'<path d="M15.5 12.5A6.5 6.5 0 0 1 7.5 4.5a6.5 6.5 0 1 0 8 8z"/>',coin:'<circle cx="10" cy="10" r="7"/><path d="M12.5 7.2c-.5-.8-1.4-1.2-2.4-1.2-1.6 0-2.6 1-2.6 2.4V14h5.2M6.5 10.5h4"/>',text:'<path d="M3 15l3.5-9L10 15M4.4 12h4.2M12 15l2.5-6 2.5 6M12.8 13h3.4"/>',cal:'<rect x="3.5" y="4.5" width="13" height="12" rx="2"/><path d="M3.5 8.5h13M7 3v3M13 3v3"/>',grid:'<rect x="3.5" y="3.5" width="5" height="5" rx="1"/><rect x="11.5" y="3.5" width="5" height="5" rx="1"/><rect x="3.5" y="11.5" width="5" height="5" rx="1"/><rect x="11.5" y="11.5" width="5" height="5" rx="1"/>',trend:'<path d="M3 15l5-5 3 3 6-7"/><path d="M13 6h4v4"/>',plus:'<circle cx="10" cy="10" r="7"/><path d="M10 7v6M7 10h6"/>',list:'<path d="M4 6h12M4 10h12M4 14h8"/>',bell:'<path d="M5.5 14V9a4.5 4.5 0 0 1 9 0v5l1.5 1.5H4z"/><path d="M8.5 17.5h3"/>',tag:'<path d="M3.5 10.5V4h6.5l7 7-6.5 6.5z"/><circle cx="7" cy="7.5" r="1"/>',target:'<circle cx="10" cy="10" r="7"/><circle cx="10" cy="10" r="3.5"/>',up:'<path d="M10 13V3M6 7l4-4 4 4M4 13v3h12v-3"/>',down:'<path d="M10 3v10M6 9l4 4 4-4M4 13v3h12v-3"/>',table:'<rect x="3" y="4" width="14" height="12" rx="1.5"/><path d="M3 8h14M8 8v8"/>',clock:'<circle cx="10" cy="10" r="7"/><path d="M10 6v4l3 2"/>',key:'<circle cx="7" cy="12" r="3"/><path d="M9.2 9.8 16 3M13 6l2 2"/>',face:'<path d="M4 7V5a1 1 0 0 1 1-1h2M13 4h2a1 1 0 0 1 1 1v2M16 13v2a1 1 0 0 1-1 1h-2M7 16H5a1 1 0 0 1-1-1v-2M8 8v1M12 8v1M8.5 12.5c1 .7 2 .7 3 0"/>',help:'<circle cx="10" cy="10" r="7"/><path d="M8 8a2 2 0 1 1 3 1.7c-.7.4-1 .8-1 1.6M10 14h.01"/>',info:'<circle cx="10" cy="10" r="7"/><path d="M10 9v5M10 6.5h.01"/>',chat:'<path d="M4 5h12v8H9l-4 3v-3H4z"/>',trash:'<path d="M4 6h12M8 6V4h4v2M6 6l1 10h6l1-10"/>',imp:'<path d="M4 4h8l4 4v8H4z"/><path d="M10 9v5M7.5 11.5 10 14l2.5-2.5"/>',kbd:'<rect x="2.5" y="5" width="15" height="10" rx="2"/><path d="M5.5 8h.01M8.5 8h.01M11.5 8h.01M14.5 8h.01M6 12h8"/>',globe:'<circle cx="10" cy="10" r="7"/><path d="M3 10h14M10 3c2 2.2 2.8 4.5 2.8 7S12 15 10 17M10 3C8 5.2 7.2 7.5 7.2 10S8 15 10 17"/>',stack:'<rect x="5" y="3" width="10" height="9" rx="1.5"/><path d="M3 7v9h11"/>'};
-const ICON_FOR={"App lock":["lock","#2F6FD0"],"Face ID or Touch ID":["face","#0F8F5E"],"Fingerprint or face unlock":["face","#0F8F5E"],"Lock after":["clock","#6E7F8D"],"Change PIN":["key","#6E7F8D"],"Hide amounts":["eye","#7A3FB8"],"Hide in app switcher":["stack","#5B6B7A"],"Where your data lives":["phone","#0F8F5E"],"Install as an app":["home","#2F6FD0"],"Storage protection":["shield","#178F9E"],"Theme":["moon","#5B5FC7"],"Region":["globe","#178F9E"],"Currency":["coin","#E07A2E"],"Text size":["text","#6E7F8D"],"Monthly income":["down","#0F8F5E"],"Month starts on":["cal","#D9534F"],"Categories":["grid","#E07A2E"],"Payoff method":["trend","#0F8F5E"],"Extra each month":["plus","#0F8F5E"],"Payoff plan":["list","#2F6FD0"],"Overspent categories":["bell","#D9534F"],"Low emergency fund":["bell","#178F9E"],"0% periods ending":["bell","#E07A2E"],"Backup reminder":["bell","#6E7F8D"],"Add due dates to my calendar":["cal","#D9534F"],"Name":["tag","#178F9E"],"Target and top-up":["target","#178F9E"],"Back up to Files or iCloud":["up","#2F6FD0"],"Backup reminder":["bell","#6E7F8D"],"PIN attempts":["shield","#D9534F"],"Restore from backup":["down","#2F6FD0"],"Import bank statement":["imp","#0F8F5E"],"Export activity as CSV":["table","#0F8F5E"],"Restore points":["clock","#5B5FC7"],"All activity":["list","#6E7F8D"],"Add to home screen":["home","#2F6FD0"],"Keyboard shortcuts":["kbd","#6E7F8D"],"Privacy":["shield","#0F8F5E"],"About Clearway":["info","#2F6FD0"],"Report a problem or suggest a feature":["chat","#E07A2E"],"Version":["tag","#6E7F8D"],"Delete everything":["trash","#D9534F"]};
+const ICON_FOR={"App lock":["lock","#2F6FD0"],"Face ID or Touch ID":["face","#0F8F5E"],"Fingerprint or face unlock":["face","#0F8F5E"],"Lock after":["clock","#6E7F8D"],"Change PIN":["key","#6E7F8D"],"Hide amounts":["eye","#7A3FB8"],"Hide in app switcher":["stack","#5B6B7A"],"Where your data lives":["phone","#0F8F5E"],"Install as an app":["home","#2F6FD0"],"Storage protection":["shield","#178F9E"],"Theme":["moon","#5B5FC7"],"Region":["globe","#178F9E"],"Currency":["coin","#E07A2E"],"Text size":["text","#6E7F8D"],"Monthly income":["down","#0F8F5E"],"Month starts on":["cal","#D9534F"],"Categories":["grid","#E07A2E"],"Payoff method":["trend","#0F8F5E"],"Extra each month":["plus","#0F8F5E"],"Payoff plan":["list","#2F6FD0"],"Overspent categories":["bell","#D9534F"],"Low emergency fund":["bell","#178F9E"],"0% periods ending":["bell","#E07A2E"],"Backup reminder":["bell","#6E7F8D"],"Add due dates to my calendar":["cal","#D9534F"],"Name":["tag","#178F9E"],"Target":["target","#178F9E"],"Monthly top-up":["plus","#178F9E"],"Suggestions and progress":["trend","#178F9E"],"Back up to Files or iCloud":["up","#2F6FD0"],"Backup reminder":["bell","#6E7F8D"],"PIN attempts":["shield","#D9534F"],"Restore from backup":["down","#2F6FD0"],"Import bank statement":["imp","#0F8F5E"],"Export activity as CSV":["table","#0F8F5E"],"Restore points":["clock","#5B5FC7"],"All activity":["list","#6E7F8D"],"Add to home screen":["home","#2F6FD0"],"Keyboard shortcuts":["kbd","#6E7F8D"],"Privacy":["shield","#0F8F5E"],"App tour":["home","#0B7D5A"],"About Clearway":["info","#2F6FD0"],"Report a problem or suggest a feature":["chat","#E07A2E"],"Version":["tag","#6E7F8D"],"Delete everything":["trash","#D9534F"]};
 const ico=label=>{const k=ICON_FOR[label]||(String(label).endsWith("?")?["help","#6E7F8D"]:null);return k?`<span class="gico" style="background:${k[1]}"><svg viewBox="0 0 20 20" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${P[k[0]]}</svg></span>`:""};
 const gi=(label,sub,right,attrs="")=>`<div class="gi" ${attrs}>${ico(label)}<div class="gl"><div>${label}</div>${sub?`<div class="gsub">${sub}</div>`:""}</div>${right||""}</div>`;
 const giLink=(label,sub,value,attrs)=>`<button class="gi gi-btn" ${attrs}>${ico(label)}<div class="gl"><div>${label}</div>${sub?`<div class="gsub">${sub}</div>`:""}</div>${value?`<span class="gv">${value}</span>`:""}${CHEV}</button>`;
@@ -1130,7 +1155,9 @@ function vSettings(){
   ],"Your phone's calendar does the reminding, so nothing leaves this device except the file you choose to open."):""}
   ${gsec("Emergency fund",[
     gi("Name","",`<input class="ginput" id="set-fundname" value="${esc(S.fund.name)}" data-action="fund-name" aria-label="Fund name">`),
-    giLink("Target and top-up",`${money(fundTarget(),{whole:true})} target · ${money(fundMonthly(),{whole:true})} a month`,"",'data-go="fund"'),
+    gi("Target",S.fund.targetMode==="months"&&essentialsMonthly()>0?`${S.fund.months} months of essentials`:"A fixed amount",`<div class="money-in gmoney"><span>${esc(curSymbol())}</span><input id="set-fund-target" inputmode="decimal" value="${Math.round(fundTarget()).toLocaleString()}" data-action="fund-target-amt" aria-label="Emergency fund target"></div>`),
+    gi("Monthly top-up","Added to your budget each month",`<div class="money-in gmoney"><span>${esc(curSymbol())}</span><input id="set-fund-monthly" inputmode="decimal" value="${fundMonthly().toLocaleString()}" data-action="fund-monthly" aria-label="Monthly top-up"></div>`),
+    giLink("Suggestions and progress","Targets based on your essentials","",'data-go="fund"'),
   ])}
   ${gsec("Your data",[
     canSave()?giLink("Back up to Files or iCloud",lb==null?"You haven't made a backup yet":lb===0?"Last backup today":`Last backup ${lb} day${lb>1?"s":""} ago`,"",'data-action="backup-export"'):"",
@@ -1146,6 +1173,7 @@ function vSettings(){
     gi("Keyboard shortcuts","P logs a payment, D adds a debt, Esc closes a window",""),
   ]):""}
   ${gsec("Help",[
+    giLink("App tour","A one-minute walkthrough of every screen","",'data-action="start-tour"'),
     faq("How is my debt-free date worked out?","Each month the plan adds interest to every balance, pays every minimum, then puts your extra payment on one debt at a time. When a debt is cleared its payment rolls onto the next. The date is the month the last balance reaches zero."),
     faq("Snowball or avalanche?","Snowball clears the smallest balance first, which gives quick wins. Avalanche clears the highest interest rate first, which costs the least. Compare both under Payoff plan."),
     faq("What happens when a 0% period ends?","From the month after it ends, the plan charges the card's normal rate. If a balance will be left, the card shows how much to pay each month to clear it in time."),
@@ -1295,6 +1323,56 @@ function openImport(incoming,dup){
   });
 }
 document.addEventListener("change",e=>{if(e.target.id==="csv-file")readStatement(e.target)});
+
+
+/* ---------- app tour: optional, offered once on Home, always in Settings > Help ---------- */
+const TOUR_KEY="clearway-tour";
+const tourSeen=()=>{try{return localStorage.getItem(TOUR_KEY)==="done"}catch(e){return false}};
+const markTour=()=>{try{localStorage.setItem(TOUR_KEY,"done")}catch(e){}};
+const TOUR=[
+  {ic:"home",c:"#0B7D5A",t:"Welcome to Clearway",b:"Clearway helps you clear your debts, stick to a budget and build a safety net. This tour takes about a minute, and you can skip it at any time.",note:"Everything you enter stays on this phone. There's no account and nothing is uploaded."},
+  {ic:"plus",c:"#CF4F39",t:"Add what you owe",b:"Tap the green <b>+</b> at the bottom, then <b>Add a debt</b>. Enter the balance, interest rate and minimum payment from your statement.",note:"Got a 0% card? Tick the 0% box and add the month it ends. Clearway warns you if a balance will be left.",go:["debt","Add a debt"]},
+  {ic:"trend",c:"#0B7D5A",t:"See your debt-free date",b:"Under <b>Debts</b>, open <b>Payoff plan</b>. It shows the month you'll be debt-free, which debt to pay first and how much interest you'll pay.",note:"Choose snowball (smallest balance first) or avalanche (highest interest first), and try an extra monthly amount to see the date move.",go:["plan","Open my plan"]},
+  {ic:"down",c:"#2F6FD0",t:"Log every payment",b:"When you pay a debt, tap <b>+</b> then <b>Log a debt payment</b>. The amount is filled in from your plan, so it usually takes two taps.",note:"Paid by bank statement? Settings › Import bank statement matches payments for you.",go:["pay","Log a payment"]},
+  {ic:"grid",c:"#E07A2E",t:"Plan your month",b:"In <b>Budget</b>, set your income and how much goes to each category. The card at the top tells you what's left to spend and whether you're on track.",note:"Paid on a set day? Settings › Month starts on lines your budget up with payday.",go:["budget","Open my budget"]},
+  {ic:"shield",c:"#0F7C8C",t:"Build your safety net",b:"In <b>Fund</b>, set a target and how much you'll add each month. Clearway shows how many months of essentials you've covered and when you'll be fully funded.",note:"Even a small starter fund stops most surprise bills turning into new debt.",go:["fund","Set my target"]},
+  {ic:"lock",c:"#5B5FC7",t:"Keep it private and safe",b:"In <b>Settings</b> you can lock the app with a PIN or Face ID, hide amounts, and save a backup to Files or iCloud.",note:"Back up now and then. If you lose your phone, a backup is the only way to get your data back.",go:["settings","Open Settings"]},
+  {ic:"target",c:"#0B7D5A",t:"You're ready",b:"Start with your own numbers, or keep exploring with the examples first.",note:"You can replay this tour any time from Settings › Help › App tour.",last:true},
+];
+let tourStep=0;
+function openTour(step){
+  tourStep=step||0;markTour();
+  let el=document.getElementById("tour");if(!el){el=document.createElement("div");el.id="tour";el.className="tour";el.setAttribute("role","dialog");el.setAttribute("aria-modal","true");el.setAttribute("aria-label","App tour");document.body.appendChild(el)}
+  lockScroll();drawTour();
+  let x0=null;el.ontouchstart=e=>{x0=e.touches[0].clientX};el.ontouchend=e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0;x0=null;if(dx<-50&&tourStep<TOUR.length-1){tourStep++;drawTour()}else if(dx>50&&tourStep>0){tourStep--;drawTour()}};
+}
+function closeTour(){const el=document.getElementById("tour");if(el)el.remove();unlockScroll();render()}
+function drawTour(){
+  const el=document.getElementById("tour"),st=TOUR[tourStep];
+  el.innerHTML=`<div class="tour-top"><span class="tour-count">${tourStep+1} of ${TOUR.length}</span><button class="btn ghost small" data-tour="skip">${st.last?"Close":"Skip"}</button></div>
+  <div class="tour-body" aria-live="polite">
+    <div class="tour-art" style="--c:${st.c}"><span class="tour-ring"></span><span class="tour-ic"><svg viewBox="0 0 20 20" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${P[st.ic]}</svg></span></div>
+    <h2>${st.t}</h2><p class="tour-b">${st.b}</p><p class="tour-note">${st.note}</p>
+    ${st.go?`<button class="btn tour-go" data-tour="go">${st.go[1]} ›</button>`:""}
+    ${st.last?`<div class="tour-end">${isExample?`<button class="btn primary" data-tour="own">Start with my own numbers</button><button class="btn" data-tour="skip">Keep exploring</button>`:`<button class="btn primary" data-tour="skip">Finish</button>`}</div>`:""}
+  </div>
+  <div class="tour-foot"><button class="btn ghost" data-tour="back" ${tourStep===0?"disabled":""}>Back</button>
+    <div class="tour-dots">${TOUR.map((_,i)=>`<button class="tour-dot" data-tour-i="${i}" aria-label="Step ${i+1}" aria-current="${i===tourStep}"></button>`).join("")}</div>
+    ${st.last?'<span style="width:72px"></span>':'<button class="btn primary" data-tour="next">Next</button>'}</div>`;
+  el.querySelector(st.last?".tour-end .btn":"[data-tour=next]")?.focus({preventScroll:true});
+}
+document.addEventListener("click",e=>{
+  if(e.target.closest("[data-action=start-tour]")){openTour(0);return}
+  if(e.target.closest("[data-action=dismiss-tour]")){markTour();render();return}
+  const d=e.target.closest("[data-tour-i]");if(d){tourStep=+d.dataset.tourI;drawTour();return}
+  const b=e.target.closest("[data-tour]");if(!b)return;const a=b.dataset.tour;
+  if(a==="next"){tourStep=Math.min(TOUR.length-1,tourStep+1);drawTour()}
+  else if(a==="back"){tourStep=Math.max(0,tourStep-1);drawTour()}
+  else if(a==="skip")closeTour();
+  else if(a==="own"){closeTour();leaveExample(true)}
+  else if(a==="go"){const g=TOUR[tourStep].go[0];closeTour();if(g==="debt")openDebtModal();else if(g==="pay")openPayModal();else go(g)}
+});
+document.addEventListener("keydown",e=>{if(!document.getElementById("tour"))return;if(e.key==="ArrowRight"&&tourStep<TOUR.length-1){tourStep++;drawTour()}else if(e.key==="ArrowLeft"&&tourStep>0){tourStep--;drawTour()}else if(e.key==="Escape")closeTour()},true);
 
 /* ---------- app lock (privacy screen, not encryption) ---------- */
 const LOCK_KEY="clearway-lock";
@@ -1502,11 +1580,11 @@ function openTxnModal(catId){
     $("#t-save").onclick=save;m.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.tagName==="INPUT"){e.preventDefault();save()}});
   });
 }
-function openFundModal(withdraw,amount){
+function openFundModal(withdraw,amount,note){
   openModal(`<h2>${withdraw?"Withdraw from":"Add money to"} ${esc(S.fund.name)}</h2>
     <div class="field"><label for="f-amt">Amount</label><div class="money-in huge"><span>${esc(curSymbol())}</span><input id="f-amt" inputmode="decimal" value="${amount||""}" autocomplete="off"></div><div class="muted">Balance now ${money(fundBalance())}</div></div>
     <div class="form-grid"><div class="field"><label for="f-date">Date</label><input id="f-date" type="date" value="${todayStr()}"></div>
-    <div class="field"><label for="f-note">${withdraw?"What was the emergency?":"Note (optional)"}</label><input id="f-note" placeholder="${withdraw?"e.g. Car repair":"e.g. Monthly top-up"}"></div></div>
+    <div class="field"><label for="f-note">${withdraw?"What was the emergency?":"Note (optional)"}</label><input id="f-note" placeholder="${withdraw?"e.g. Car repair":"e.g. Monthly top-up"}" value="${esc(note||"")}"></div></div>
     <div class="muted" id="f-err"></div>
     <div class="modal-actions"><button class="btn ghost" data-close>Cancel</button><button class="btn primary" id="f-save">${withdraw?"Withdraw":"Add money"}</button></div>`,m=>{
     const i=$("#f-amt");i.focus();i.select();
@@ -1573,8 +1651,9 @@ document.addEventListener("click",e=>{
     case "edit-cell":editing=b.dataset.key;render();break;
     case "add-txn":openTxnModal(b.dataset.cat);break;
     case "add-cat":openCatModal();break;
-    case "fund-add":openFundModal(false,b.dataset.amount);break;
+    case "fund-add":openFundModal(false,b.dataset.amount,b.dataset.note);break;
     case "fund-withdraw":openFundModal(true);break;
+    case "fund-pick":{const v=b.dataset.v;if(v==="starter"){S.fund.targetMode="fixed";S.fund.fixed=1000}else{S.fund.targetMode="months";S.fund.months=+v.slice(1)}if(isExample)leaveExampleSilently();commit();toast("Target set to "+money(fundTarget(),{whole:true})+".");break}
     case "fund-mode":S.fund.targetMode=b.dataset.v;commit();break;
     case "fund-months":S.fund.months=+b.dataset.v;commit();break;
     case "act-filter":actFilter=b.dataset.v;render();break;
@@ -1607,6 +1686,7 @@ document.addEventListener("change",e=>{
   else if(a==="rename-cat"){const v=t.value.trim();const c=allCats().find(c=>c.id===t.dataset.id);if(v&&c){S.budget.groups.forEach(g=>g.cats.forEach(x=>{if(x.id===c.id)x.name=v}));if(isExample)leaveExampleSilently();commit()}}
   else if(a==="rename-group"){const v=t.value.trim();const g=S.budget.groups.find(x=>x.id===t.dataset.id);if(v&&g){g.name=v;if(isExample)leaveExampleSilently();commit()}}
   else if(a==="essential"){S.budget.groups.find(g=>g.id===t.dataset.id).essential=t.checked;commit()}
+  else if(a==="fund-target-amt"){const v=parseMoney(t.value);if(v>=0){S.fund.targetMode="fixed";S.fund.fixed=v;if(isExample)leaveExampleSilently();commit();toast("Target set to "+money(v,{whole:true})+".")}}
   else if(a==="fund-fixed"){const v=parseMoney(t.value);if(v>=0){S.fund.fixed=v;commit()}}
   else if(a==="fund-target"){if(t.value==="fixed")S.fund.targetMode="fixed";else{S.fund.targetMode="months";S.fund.months=+t.value.slice(1)}commit()}
   else if(a==="fund-monthly"){const v=parseMoney(t.value);if(v>=0){materialise(monthKey()).assigned.fund=v;commit()}}
