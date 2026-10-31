@@ -232,15 +232,40 @@ body.covered .shell{filter:blur(22px)}body.covered::after{content:"";position:fi
 .qa-primary .gsub{color:color-mix(in srgb,var(--on-accent) 80%,transparent)}
 .qa-primary .qa-ic{background:rgba(255,255,255,.2)!important;color:var(--on-accent)!important}
 .navbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;display:grid!important;grid-template-columns:1fr auto 1fr;align-items:center;margin:-14px calc(-1*max(16px,env(safe-area-inset-left,0px))) 0;padding:10px max(16px,env(safe-area-inset-left,0px));background:color-mix(in srgb,var(--bg) 82%,transparent);-webkit-backdrop-filter:saturate(1.5) blur(14px);backdrop-filter:saturate(1.5) blur(14px);border-bottom:1px solid color-mix(in srgb,var(--line) 60%,transparent)}
+@media (min-width:761px){.navbar{display:none!important}}
 .nb-back{all:unset;cursor:pointer;color:var(--accent);font-weight:500;font-size:16px;justify-self:start;padding:4px 0;display:inline-flex;align-items:center;gap:6px}
-.nb-title{font-weight:600;font-size:16px}
+.nb-title{font-weight:600;font-size:16px;opacity:0}
+.nb-act{all:unset;cursor:pointer;justify-self:end;color:var(--accent);font-size:28px;line-height:1;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%}
+.nb-act:focus-visible{outline:2px solid var(--accent)}
+body.scrolled .nb-title{opacity:1}
+@media (max-width:760px){body.pushed nav.tabs{display:none}body.pushed main{padding-bottom:calc(40px + env(safe-area-inset-bottom,0px))}}
 .navbar::before{content:"";position:absolute;left:0;right:0;bottom:100%;height:60px;background:var(--bg)}
 .navbar{background:color-mix(in srgb,var(--bg) 94%,transparent)!important}
 .navbar+.topbar h1,.navbar~.topbar h1{font-size:30px}
 .gselect{appearance:none;-webkit-appearance:none;border:0;background:transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%2371877E' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M6 8l4 4 4-4'/%3E%3C/svg%3E") no-repeat right 4px center/16px;padding:8px 26px 8px 8px;color:var(--ink-3);text-align:right;font:inherit;cursor:pointer}
-.faq-a{padding:2px 0 8px;line-height:1.5}
+.faq-a{padding:2px 0 8px 42px;line-height:1.5}
+.gico{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex:none;align-self:center}
+.gico svg{width:18px;height:18px}
+.gi[data-stack]{flex-wrap:wrap}.gi[data-stack]>.seg{width:100%;margin:2px 0 4px 42px;width:calc(100% - 42px)}.gi[data-stack]>.seg button{flex:1;text-align:center}
+.imp-list{display:flex;flex-direction:column;max-height:52vh;overflow:auto;border:1px solid var(--line);border-radius:14px}
+.imp-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;padding:10px 12px;border-top:1px solid var(--line)}.imp-row:first-child{border-top:0}
+.imp-desc{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.imp-amt{font-weight:600;text-align:right}
+.imp-list{scrollbar-width:none}.imp-list::-webkit-scrollbar{display:none}
+.imp-pick{all:unset;cursor:pointer;grid-column:1/-1;display:flex;align-items:center;gap:8px;padding:8px 10px;margin:2px -4px 0;border-radius:10px;background:var(--surface-2);color:var(--accent);font-weight:600}
+.imp-pick span:nth-child(2){flex:1}.imp-pick:focus-visible{outline:2px solid var(--accent)}
+.imp-dot{width:8px;height:8px;border-radius:50%;background:var(--accent)}.imp-dot.debt{background:var(--paid)}.imp-dot.off{background:var(--ink-3)}
+.modal{position:relative}
+.imp-picker{position:absolute;inset:0;background:var(--surface);border-radius:inherit;display:flex;flex-direction:column;z-index:2}
+.imp-ph{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;padding:14px 18px 8px}.imp-pt{text-align:center;max-width:56vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.imp-search{padding:4px 18px 8px;border-bottom:1px solid var(--line)}.imp-search input{width:100%;padding:9px 12px;border:0;border-radius:10px;background:var(--surface-2);font-size:16px}.imp-search input:focus{outline:2px solid var(--accent)}
+.imp-opts{overflow:auto;padding:4px 18px 18px;scrollbar-width:none}.imp-opts::-webkit-scrollbar{display:none}
+.imp-opts .gh{margin:14px 0 4px}
+.imp-opt{all:unset;cursor:pointer;display:flex;align-items:center;gap:10px;width:100%;padding:12px 4px;border-bottom:1px solid var(--line)}
+.imp-opt:focus-visible{outline:2px solid var(--accent)}
+.imp-opt .gl{flex:1;display:flex;flex-direction:column;gap:1px;min-width:0}.imp-tick{color:var(--accent);font-weight:700}
+body.text-large main,body.text-large .modal{zoom:1.1}body.text-xl main,body.text-xl .modal{zoom:1.22}
 a.gi{text-decoration:none;color:inherit}
-select.gselect{appearance:none;-webkit-appearance:none;border:0!important;background:transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%230B7D5A' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M6 8l4 4 4-4'/%3E%3C/svg%3E") no-repeat right 0 center/16px!important;padding:8px 22px 8px 6px!important;max-width:62%;color:var(--accent)!important;font-weight:600;text-align:right;text-align-last:right}
+select.gselect{appearance:none;-webkit-appearance:none;border:0!important;background:transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%2371877E' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 8l3-3 3 3M7 12l3 3 3-3'/%3E%3C/svg%3E") no-repeat right 0 center/15px!important;padding:8px 20px 8px 6px!important;max-width:62%;color:var(--ink-3)!important;font-weight:400;text-align:right;text-align-last:right;font-size:15px}
 .qa-list{display:flex;flex-direction:column;gap:8px}
 .qa{all:unset;cursor:pointer;display:flex;align-items:center;gap:14px;padding:12px;border-radius:14px;background:var(--surface);border:1px solid var(--line)}
 .qa .gsub{color:var(--ink-2)}
@@ -249,8 +274,14 @@ select.gselect{appearance:none;-webkit-appearance:none;border:0!important;backgr
 .qa-ic{width:42px;height:42px;border-radius:12px;color:#fff;display:flex;align-items:center;justify-content:center;flex:none}
 .qa-ic svg{width:22px;height:22px}
 .gsec{display:flex;flex-direction:column;gap:8px}
-.gh{font-family:var(--body);font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);font-weight:600;padding:0 4px}
-.glist{background:var(--surface);border:1px solid color-mix(in srgb,var(--line) 70%,transparent);border-radius:16px;overflow:hidden;box-shadow:var(--shadow)}
+.gh{font-family:var(--body);font-size:12.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-3);font-weight:500;padding:0 16px}
+.gfoot{padding:0 16px!important}
+.glist{background:var(--surface);border:0;border-radius:12px;overflow:hidden;box-shadow:none}
+.settings .gi{min-height:50px;padding-top:8px;padding-bottom:8px}
+.settings .gi+.gi,.settings .glist>*+*{border-top:0;box-shadow:inset 58px 0 0 var(--surface),inset 0 1px 0 var(--line)}
+.settings .glist>.swipe+.swipe,.settings .glist>.swipe+.gi{box-shadow:inset 48px 0 0 var(--surface),inset 0 1px 0 var(--line)}.settings .glist>.gi-add,.settings .glist>.gi-del{box-shadow:inset 0 1px 0 var(--line)}
+.settings .gi-del,.settings .gi-del *{color:var(--owed)!important}
+.settings .glist>.swipe+.swipe .swipe-row{box-shadow:inset 0 1px 0 var(--line)}.settings .glist>.swipe+.swipe .swipe-row::before{content:"";position:absolute;left:0;top:0;width:48px;height:1px;background:var(--surface)}
 .gi{display:flex;align-items:center;gap:12px;min-height:56px;padding:10px 16px;border-top:1px solid var(--line);width:100%;text-align:left;background:none;font:inherit;color:inherit}
 .glist>.gi:first-child,.glist>:first-child{border-top:0}
 .gi-btn{cursor:pointer;border-left:0;border-right:0;border-bottom:0}
@@ -263,10 +294,10 @@ select.gselect{appearance:none;-webkit-appearance:none;border:0!important;backgr
 .gfoot{margin:0;padding:0 4px;font-size:12.5px;color:var(--ink-3);max-width:65ch}
 .gi-add{color:var(--accent);font-weight:600;justify-content:flex-start}
 .gselect{padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface);max-width:60%}
-.ginput{padding:8px 2px;border:0;border-radius:8px;background:transparent;min-width:0;width:180px;max-width:55%;text-align:right;color:var(--accent);font-weight:600}
+.ginput{padding:8px 2px;border:0;border-radius:8px;background:transparent;min-width:0;width:180px;max-width:55%;text-align:right;color:var(--ink-3);font-weight:400}
 .ginput-wide{flex:1;width:auto;max-width:none;background:transparent;border-color:transparent;font-weight:500;padding-left:0;text-align:left;color:var(--ink)}
 .ginput:focus,.gh-input:focus{outline:2px solid var(--accent);outline-offset:0;background:var(--surface)}
-.gmoney{width:120px;flex:none;position:relative}.gmoney input{padding:8px 2px 8px 22px;border:0;border-radius:8px;width:100%;background:transparent;text-align:right;color:var(--accent);font-weight:600}.gmoney input:focus{background:var(--surface-2);outline:2px solid var(--accent)}.gmoney{display:flex;align-items:center;justify-content:flex-end;gap:1px}.gmoney span{position:static!important;transform:none!important;color:var(--accent)!important;font-weight:600}.gmoney input{width:6ch!important;padding-left:1px!important;flex:none;text-align:left!important}
+.gmoney{width:120px;flex:none;position:relative}.gmoney input{padding:8px 2px 8px 22px;border:0;border-radius:8px;width:100%;background:transparent;text-align:right;color:var(--ink-3);font-weight:400}.gmoney input:focus{background:var(--surface-2);outline:2px solid var(--accent)}.gmoney{display:flex;align-items:center;justify-content:flex-end;gap:1px}.gmoney span{position:static!important;transform:none!important;color:var(--ink-3)!important;font-weight:400}.gmoney input{width:6ch!important;padding-left:1px!important;flex:none;text-align:left!important}
 .gdetails{display:block}.gdetails summary{display:flex;align-items:center;gap:12px;cursor:pointer;list-style:none;min-height:36px}.gdetails summary::-webkit-details-marker{display:none}.gdetails[open] .chev{transform:rotate(90deg)}
 .gh-row{display:flex;align-items:center;gap:10px;justify-content:space-between;padding:0 4px}
 .gh-input{font-family:var(--display);font-size:17px;font-weight:700;border:0;background:transparent;padding:4px 6px;border-radius:8px;min-width:0;flex:1;color:var(--ink)}
@@ -299,6 +330,7 @@ body.hide-amounts .chart text{opacity:0}
 .keys button:active{background:var(--line)}.keys .kalt{background:transparent;font-size:15px;font-family:var(--body)}
 .keys button:focus-visible{outline:2px solid var(--accent)}
 .kp-modal{align-items:center;padding-top:20px!important}
+.lockscreen{overflow:auto}@media (max-height:640px){.keys{grid-template-columns:repeat(3,60px);gap:10px}.keys button{width:60px;height:60px;font-size:22px}.lockicon{width:44px;height:44px}.dots{margin:4px 0 8px}}
 body{-webkit-tap-highlight-color:transparent;overscroll-behavior-y:none}
 .promo-note{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:12px 14px;border-radius:10px;font-size:13.5px;color:var(--ink)}
 .promo-note.bad{background:var(--owed-soft)}.promo-note.good{background:var(--paid-soft)}
@@ -306,7 +338,8 @@ body{-webkit-tap-highlight-color:transparent;overscroll-behavior-y:none}
   .btn,.chip,.cellbtn,.nav button,.tabs button{transition:transform .08s ease,background-color .15s,border-color .15s}
   .btn:active,.chip:active,.cellbtn:active,.tabs button:active{transform:scale(.96)}
   #view.enter{animation:viewin .2s ease-out}
-  .overlay{animation:fadein .15s ease-out}
+  .overlay{animation:dimin .15s ease-out}
+  @keyframes dimin{from{background-color:transparent}}
   @keyframes viewin{from{transform:translateY(8px)}to{transform:none}}
   @keyframes fadein{from{opacity:0}to{opacity:1}}
   @keyframes sheetin{from{transform:translateY(100%)}to{transform:none}}
@@ -439,11 +472,11 @@ const nowIdx=()=>mIndex(monthKey());
 const sum=(a,f=x=>x)=>a.reduce((t,x)=>t+(+f(x)||0),0);
 const round2=n=>Math.round(n*100)/100;
 const parseMoney=v=>{const n=parseFloat(String(v).replace(/[^0-9.\-]/g,""));return isFinite(n)?round2(n):NaN};
-const fmtDate=s=>{const [y,m,d]=s.split("-").map(Number);return `${d} ${MONTHS[m-1]}${y!==new Date().getFullYear()?" "+y:""}`};
+const fmtDate=s=>{const [y,m,d]=s.split("-").map(Number);const us=/^en-(US|CA)$/.test(S?.locale||navigator.language||"");return us?`${MONTHS[m-1]} ${d}${y!==new Date().getFullYear()?", "+y:""}`:`${d} ${MONTHS[m-1]}${y!==new Date().getFullYear()?" "+y:""}`};
 let fmtCache={};
 function money(n,opts={}){
   const c=S?.currency||"GBP";const k=c+(opts.whole?"w":"")+(opts.sign?"s":"");
-  if(!fmtCache[k])fmtCache[k]=new Intl.NumberFormat(undefined,{style:"currency",currency:c,minimumFractionDigits:opts.whole?0:2,maximumFractionDigits:opts.whole?0:2,signDisplay:opts.sign?"exceptZero":"auto"});
+  if(!fmtCache[k])fmtCache[k]=new Intl.NumberFormat(S?.locale||undefined,{style:"currency",currency:c,minimumFractionDigits:opts.whole?0:2,maximumFractionDigits:opts.whole?0:2,signDisplay:opts.sign?"exceptZero":"auto"});
   const out=fmtCache[k].format(Math.abs(n)<0.005?0:n);
   return S?.hide?out.replace(/[\d.,]+/,"•••"):out;
 }
@@ -765,7 +798,7 @@ function homeAlerts(){
   const al=S.alerts||{};const out=[];const k=monthKey();
   if(al.overspend!==false){const over=allCats().filter(c=>availableFor(c.id,k)<-0.005);if(over.length)out.push(["warn","Budget",`${over.length===1?esc(over[0].name)+" is":over.length+" categories are"} over budget this month`,"budget"])}
   if(al.fund!==false&&S.debts.length){const ess=essentialsMonthly();if(ess>0&&fundBalance()<ess)out.push(["warn","Emergency fund","Covers less than one month of essentials","fund"])}
-  if(al.backup!==false&&canSave()&&!isExample&&S.debts.length){const d=daysSince(S.lastBackup);if(d==null||d>30)out.push(["warn","Backup",d==null?"You haven't saved a backup yet":"Last backup was "+d+" days ago","settings"])}
+  if(al.backup!==false&&canSave()&&!isExample&&S.debts.length){const d=daysSince(S.lastBackup);if(d==null||d>(S.backupEvery||30))out.push(["warn","Backup",d==null?"You haven't saved a backup yet":"Last backup was "+d+" days ago","settings"])}
   return out;
 }
 function checkCard(items){
@@ -1036,8 +1069,11 @@ function vActivity(){
 }
 const CHEV='<svg class="chev" viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 5l5 5-5 5"/></svg>';
 const toggle=(id,on,action,label)=>`<button class="switch" role="switch" aria-checked="${!!on}" aria-label="${esc(label)}" id="${id}" data-action="${action}"><span></span></button>`;
-const gi=(label,sub,right,attrs="")=>`<div class="gi" ${attrs}><div class="gl"><div>${label}</div>${sub?`<div class="gsub">${sub}</div>`:""}</div>${right||""}</div>`;
-const giLink=(label,sub,value,attrs)=>`<button class="gi gi-btn" ${attrs}><div class="gl"><div>${label}</div>${sub?`<div class="gsub">${sub}</div>`:""}</div>${value?`<span class="gv">${value}</span>`:""}${CHEV}</button>`;
+const P={lock:'<rect x="5" y="9" width="10" height="8" rx="2"/><path d="M7 9V6.5a3 3 0 0 1 6 0V9"/>',eye:'<path d="M2 10s3-5 8-5 8 5 8 5-3 5-8 5-8-5-8-5z"/><circle cx="10" cy="10" r="2.2"/>',phone:'<rect x="6" y="2.5" width="8" height="15" rx="2"/><path d="M9 15h2"/>',shield:'<path d="M10 2.5 16 5v4.5c0 4-2.7 6.5-6 7.5-3.3-1-6-3.5-6-7.5V5z"/>',home:'<path d="M3 9.5 10 4l7 5.5V17H3z"/>',moon:'<path d="M15.5 12.5A6.5 6.5 0 0 1 7.5 4.5a6.5 6.5 0 1 0 8 8z"/>',coin:'<circle cx="10" cy="10" r="7"/><path d="M12.5 7.2c-.5-.8-1.4-1.2-2.4-1.2-1.6 0-2.6 1-2.6 2.4V14h5.2M6.5 10.5h4"/>',text:'<path d="M3 15l3.5-9L10 15M4.4 12h4.2M12 15l2.5-6 2.5 6M12.8 13h3.4"/>',cal:'<rect x="3.5" y="4.5" width="13" height="12" rx="2"/><path d="M3.5 8.5h13M7 3v3M13 3v3"/>',grid:'<rect x="3.5" y="3.5" width="5" height="5" rx="1"/><rect x="11.5" y="3.5" width="5" height="5" rx="1"/><rect x="3.5" y="11.5" width="5" height="5" rx="1"/><rect x="11.5" y="11.5" width="5" height="5" rx="1"/>',trend:'<path d="M3 15l5-5 3 3 6-7"/><path d="M13 6h4v4"/>',plus:'<circle cx="10" cy="10" r="7"/><path d="M10 7v6M7 10h6"/>',list:'<path d="M4 6h12M4 10h12M4 14h8"/>',bell:'<path d="M5.5 14V9a4.5 4.5 0 0 1 9 0v5l1.5 1.5H4z"/><path d="M8.5 17.5h3"/>',tag:'<path d="M3.5 10.5V4h6.5l7 7-6.5 6.5z"/><circle cx="7" cy="7.5" r="1"/>',target:'<circle cx="10" cy="10" r="7"/><circle cx="10" cy="10" r="3.5"/>',up:'<path d="M10 13V3M6 7l4-4 4 4M4 13v3h12v-3"/>',down:'<path d="M10 3v10M6 9l4 4 4-4M4 13v3h12v-3"/>',table:'<rect x="3" y="4" width="14" height="12" rx="1.5"/><path d="M3 8h14M8 8v8"/>',clock:'<circle cx="10" cy="10" r="7"/><path d="M10 6v4l3 2"/>',key:'<circle cx="7" cy="12" r="3"/><path d="M9.2 9.8 16 3M13 6l2 2"/>',face:'<path d="M4 7V5a1 1 0 0 1 1-1h2M13 4h2a1 1 0 0 1 1 1v2M16 13v2a1 1 0 0 1-1 1h-2M7 16H5a1 1 0 0 1-1-1v-2M8 8v1M12 8v1M8.5 12.5c1 .7 2 .7 3 0"/>',help:'<circle cx="10" cy="10" r="7"/><path d="M8 8a2 2 0 1 1 3 1.7c-.7.4-1 .8-1 1.6M10 14h.01"/>',info:'<circle cx="10" cy="10" r="7"/><path d="M10 9v5M10 6.5h.01"/>',chat:'<path d="M4 5h12v8H9l-4 3v-3H4z"/>',trash:'<path d="M4 6h12M8 6V4h4v2M6 6l1 10h6l1-10"/>',imp:'<path d="M4 4h8l4 4v8H4z"/><path d="M10 9v5M7.5 11.5 10 14l2.5-2.5"/>',kbd:'<rect x="2.5" y="5" width="15" height="10" rx="2"/><path d="M5.5 8h.01M8.5 8h.01M11.5 8h.01M14.5 8h.01M6 12h8"/>',globe:'<circle cx="10" cy="10" r="7"/><path d="M3 10h14M10 3c2 2.2 2.8 4.5 2.8 7S12 15 10 17M10 3C8 5.2 7.2 7.5 7.2 10S8 15 10 17"/>',stack:'<rect x="5" y="3" width="10" height="9" rx="1.5"/><path d="M3 7v9h11"/>'};
+const ICON_FOR={"App lock":["lock","#2F6FD0"],"Face ID or Touch ID":["face","#0F8F5E"],"Fingerprint or face unlock":["face","#0F8F5E"],"Lock after":["clock","#6E7F8D"],"Change PIN":["key","#6E7F8D"],"Hide amounts":["eye","#7A3FB8"],"Hide in app switcher":["stack","#5B6B7A"],"Where your data lives":["phone","#0F8F5E"],"Install as an app":["home","#2F6FD0"],"Storage protection":["shield","#178F9E"],"Theme":["moon","#5B5FC7"],"Region":["globe","#178F9E"],"Currency":["coin","#E07A2E"],"Text size":["text","#6E7F8D"],"Monthly income":["down","#0F8F5E"],"Month starts on":["cal","#D9534F"],"Categories":["grid","#E07A2E"],"Payoff method":["trend","#0F8F5E"],"Extra each month":["plus","#0F8F5E"],"Payoff plan":["list","#2F6FD0"],"Overspent categories":["bell","#D9534F"],"Low emergency fund":["bell","#178F9E"],"0% periods ending":["bell","#E07A2E"],"Backup reminder":["bell","#6E7F8D"],"Add due dates to my calendar":["cal","#D9534F"],"Name":["tag","#178F9E"],"Target and top-up":["target","#178F9E"],"Back up to Files or iCloud":["up","#2F6FD0"],"Backup reminder":["bell","#6E7F8D"],"PIN attempts":["shield","#D9534F"],"Restore from backup":["down","#2F6FD0"],"Import bank statement":["imp","#0F8F5E"],"Export activity as CSV":["table","#0F8F5E"],"Restore points":["clock","#5B5FC7"],"All activity":["list","#6E7F8D"],"Add to home screen":["home","#2F6FD0"],"Keyboard shortcuts":["kbd","#6E7F8D"],"Privacy":["shield","#0F8F5E"],"About Clearway":["info","#2F6FD0"],"Report a problem or suggest a feature":["chat","#E07A2E"],"Version":["tag","#6E7F8D"],"Delete everything":["trash","#D9534F"]};
+const ico=label=>{const k=ICON_FOR[label]||(String(label).endsWith("?")?["help","#6E7F8D"]:null);return k?`<span class="gico" style="background:${k[1]}"><svg viewBox="0 0 20 20" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${P[k[0]]}</svg></span>`:""};
+const gi=(label,sub,right,attrs="")=>`<div class="gi" ${attrs}>${ico(label)}<div class="gl"><div>${label}</div>${sub?`<div class="gsub">${sub}</div>`:""}</div>${right||""}</div>`;
+const giLink=(label,sub,value,attrs)=>`<button class="gi gi-btn" ${attrs}>${ico(label)}<div class="gl"><div>${label}</div>${sub?`<div class="gsub">${sub}</div>`:""}</div>${value?`<span class="gv">${value}</span>`:""}${CHEV}</button>`;
 const gsec=(title,items,foot)=>`<section class="gsec"><h2 class="gh">${title}</h2><div class="glist">${items.join("")}</div>${foot?`<p class="gfoot">${foot}</p>`:""}</section>`;
 const canSave=()=>typeof saveFile==="function";
 let storeState="unknown";
@@ -1056,32 +1092,36 @@ function vSettings(){
     gi("App lock",lk?"Asks for your PIN when you open Clearway":"Lock Clearway with a 4-digit PIN",toggle("set-lock",!!lk,"lock-toggle","App lock")),
     lk?gi("Lock after","How long Clearway can sit in the background",`<div class="seg seg-sm" role="group" aria-label="Lock after">${[[0,"Instantly"],[60000,"1 min"],[300000,"5 min"]].map(([v,l])=>`<button aria-pressed="${(lk.after??60000)===v}" data-action="lock-after" data-v="${v}">${l}</button>`).join("")}</div>`):"",
     lk&&bioAvail?gi(bioName(),"Unlock without typing your PIN",toggle("set-bio",!!lk.bio,"bio-toggle",bioName())):"",
+    lk?gi("PIN attempts",lk.wipe?"Erase all data after 10 wrong PINs":"Waits longer after each wrong PIN past 5",toggle("set-wipe",!!lk.wipe,"wipe-toggle","Erase after 10 wrong PINs")):"",
     lk?giLink("Change PIN","","",'data-action="lock-change"'):"",
     gi("Hide amounts","Blur every figure, handy in public. Also on the eye button.",toggle("set-hide",!!S.hide,"toggle-hide","Hide amounts")),
     gi("Hide in app switcher","Cover your figures when you leave the app",toggle("set-cover",S.cover!==false,"cover-toggle","Hide in app switcher")),
     gi("Where your data lives",dataWhere(),""),
-    canSave()?gi("Storage protection",storeState==="on"?"On. Your browser won't clear Clearway's data to free up space.":storeState==="off"?"Off. Add Clearway to your home screen to turn it on.":"Checking…",`<span class="pill ${storeState==="on"?"good":"warn"}">${storeState==="on"?"On":"Off"}</span>`):"",
-    canSave()?gi("Installed on home screen",isStandalone()?"Opens full screen and works offline":"Not yet. See Add to home screen under App.",`<span class="pill ${isStandalone()?"good":"neutral"}">${isStandalone()?"Yes":"No"}</span>`):"",
+    canSave()&&isStandalone()&&storeState==="on"?gi("Storage protection","On. Your data won't be cleared to free up space.",'<span class="pill good">On</span>'):"",
+    false?gi("Storage protection",storeState==="on"?"On. Your browser won't clear Clearway's data to free up space.":storeState==="off"?"Off. Add Clearway to your home screen to turn it on.":"Checking…",`<span class="pill ${storeState==="on"?"good":"warn"}">${storeState==="on"?"On":"Off"}</span>`):"",
+    false?gi("Installed on home screen",isStandalone()?"Opens full screen and works offline":"Not yet. See Add to home screen under App.",`<span class="pill ${isStandalone()?"good":"neutral"}">${isStandalone()?"Yes":"No"}</span>`):"",
   ],lk?"Forgot your PIN? On the lock screen, tap Forgot PIN to start again from a backup or restore point. The PIN stops someone picking up your phone and looking. It isn't encryption, so keep your phone's own lock on too.":"")}
   ${gsec("Appearance",[
-    gi("Theme","",`<div class="seg seg-sm" role="group" aria-label="Theme">${[["system","Auto"],["light","Light"],["dark","Dark"]].map(([k,l])=>`<button aria-pressed="${th===k}" data-action="theme" data-v="${k}">${l}</button>`).join("")}</div>`),
+    gi("Theme","",`<select class="gselect" id="set-theme" data-action="theme-sel" aria-label="Theme">${[["system","Automatic"],["light","Light"],["dark","Dark"]].map(([k,l])=>`<option value="${k}" ${th===k?"selected":""}>${l}</option>`).join("")}</select>`),
+    gi("Text size","",`<select class="gselect" id="set-text" data-action="text-sel" aria-label="Text size">${[["default","Default"],["large","Large"],["xl","Larger"]].map(([k,l])=>`<option value="${k}" ${(S.textSize||"default")===k?"selected":""}>${l}</option>`).join("")}</select>`),
+    gi("Region","Number and date style",`<select class="gselect" id="set-region" data-action="region-sel" aria-label="Region">${[["auto","Automatic"],["en-GB","United Kingdom"],["en-IE","Ireland"],["en-US","United States"],["en-CA","Canada"],["en-AU","Australia"],["de-DE","Europe (1.234,56)"],["fr-FR","France (1 234,56)"]].map(([k,l])=>`<option value="${k}" ${(S.locale||"auto")===k?"selected":""}>${l}</option>`).join("")}</select>`),
     gi("Currency","",`<select class="gselect" id="set-cur" data-action="currency" aria-label="Currency">${cur.map(([c,n])=>`<option value="${c}" ${S.currency===c?"selected":""}>${c} · ${n}</option>`).join("")}</select>`),
   ])}
   ${gsec("Budget",[
-    gi("Monthly income","Used for this and future months",`<div class="money-in gmoney"><span>${esc(curSymbol())}</span><input id="set-income" inputmode="decimal" value="${+m.income||0}" data-action="set-income" aria-label="Monthly income"></div>`),
+    gi("Monthly income","Used for this and future months",`<div class="money-in gmoney"><span>${esc(curSymbol())}</span><input id="set-income" inputmode="decimal" value="${(+m.income||0).toLocaleString()}" data-action="set-income" aria-label="Monthly income"></div>`),
     gi("Month starts on","Set it to your payday",`<select class="gselect" id="set-start" data-action="month-start" aria-label="Budget month starts on">${Array.from({length:28},(_,i)=>i+1).map(d=>`<option value="${d}" ${startDay()===d?"selected":""}>${d===1?"1st of the month":ordinal(d)}</option>`).join("")}</select>`),
     giLink("Categories",`${S.budget.groups.length} groups · ${nCats} categories`,"",'data-go="categories"'),
   ])}
   ${gsec("Debts",[
-    gi("Payoff method",S.strategy==="snowball"?"Smallest balance first":S.strategy==="avalanche"?"Highest interest first":"Your own order",`<div class="seg seg-sm" role="group" aria-label="Payoff method">${[["snowball","Snowball"],["avalanche","Avalanche"],["custom","Mine"]].map(([k,l])=>`<button aria-pressed="${S.strategy===k}" data-action="strategy" data-v="${k}">${l}</button>`).join("")}</div>`),
-    gi("Extra each month","On top of your minimums",`<div class="money-in gmoney"><span>${esc(curSymbol())}</span><input id="set-extra" inputmode="decimal" value="${S.extra}" data-action="extra-input" aria-label="Extra each month"></div>`),
+    gi("Payoff method",S.strategy==="snowball"?"Smallest balance first":S.strategy==="avalanche"?"Highest interest first":"Your own order",`<select class="gselect" id="set-strategy" data-action="strategy-sel" aria-label="Payoff method">${[["snowball","Snowball"],["avalanche","Avalanche"],["custom","My order"]].map(([k,l])=>`<option value="${k}" ${S.strategy===k?"selected":""}>${l}</option>`).join("")}</select>`),
+    gi("Extra each month","On top of your minimums",`<div class="money-in gmoney"><span>${esc(curSymbol())}</span><input id="set-extra" inputmode="decimal" value="${(+S.extra||0).toLocaleString()}" data-action="extra-input" aria-label="Extra each month"></div>`),
     giLink("Payoff plan","Order, dates and month-by-month schedule","",'data-go="plan"'),
   ])}
   ${gsec("Alerts on Home",[
     gi("Overspent categories","When a budget category goes over",toggle("al-o",(S.alerts||{}).overspend!==false,"alert-toggle","Overspent categories").replace('data-action','data-k="overspend" data-action')),
     gi("Low emergency fund","When it covers less than a month",toggle("al-f",(S.alerts||{}).fund!==false,"alert-toggle","Low emergency fund").replace('data-action','data-k="fund" data-action')),
     gi("0% periods ending","Six months before a promo rate ends",toggle("al-p",(S.alerts||{}).promo!==false,"alert-toggle","0% periods ending").replace('data-action','data-k="promo" data-action')),
-    canSave()?gi("Backup reminder","If it's been over 30 days",toggle("al-b",(S.alerts||{}).backup!==false,"alert-toggle","Backup reminder").replace('data-action','data-k="backup" data-action')):"",
+    canSave()?gi("Backup reminder","Nudge me on Home when a backup is due",`<select class="gselect" id="set-bk" data-action="backup-every" aria-label="Backup reminder">${[["0","Off"],["7","Weekly"],["30","Monthly"]].map(([v,l])=>`<option value="${v}" ${String((S.alerts||{}).backup===false?0:(S.backupEvery||30))===v?"selected":""}>${l}</option>`).join("")}</select>`):"",
   ])}
   ${canSave()?gsec("Reminders",[
     giLink("Add due dates to my calendar",`A monthly reminder for ${activeDebts().filter(d=>d.dueDay).length} debt${activeDebts().filter(d=>d.dueDay).length===1?"":"s"}, two days before each is due`,"",'data-action="export-ics"'),
@@ -1091,15 +1131,16 @@ function vSettings(){
     giLink("Target and top-up",`${money(fundTarget(),{whole:true})} target · ${money(fundMonthly(),{whole:true})} a month`,"",'data-go="fund"'),
   ])}
   ${gsec("Your data",[
-    canSave()?giLink("Save backup file",lb==null?"You haven't made a backup yet":lb===0?"Last backup today":`Last backup ${lb} day${lb>1?"s":""} ago`,"",'data-action="backup-export"'):"",
-    canSave()?`<label class="gi gi-btn" for="backup-file"><div class="gl"><div>Restore from backup</div><div class="gsub">Replace everything with a backup file</div></div>${CHEV}</label><input id="backup-file" type="file" accept="application/json,.json" class="sr" data-action="backup-import">`:"",
+    canSave()?giLink("Back up to Files or iCloud",lb==null?"You haven't made a backup yet":lb===0?"Last backup today":`Last backup ${lb} day${lb>1?"s":""} ago`,"",'data-action="backup-export"'):"",
+    canSave()?`<label class="gi gi-btn" for="backup-file">${ico("Restore from backup")}<div class="gl"><div>Restore from backup</div><div class="gsub">Replace everything with a backup file</div></div>${CHEV}</label><input id="backup-file" type="file" accept="application/json,.json" class="sr" data-action="backup-import">`:"",
+    `<label class="gi gi-btn" for="csv-file">${ico("Import bank statement")}<div class="gl"><div>Import bank statement</div><div class="gsub">Open a CSV from your bank app. Matched on this device, never uploaded.</div></div>${CHEV}</label><input id="csv-file" type="file" accept=".csv,text/csv" class="sr">`,
     canSave()?giLink("Export activity as CSV","Every payment, purchase and fund entry, for a spreadsheet","",'data-action="export-csv"'):"",
     giLink("Restore points","A daily copy from the last 7 days, kept on this device","",'data-action="open-points"'),
     giLink("All activity",`${S.payments.length+S.txns.length+S.fund.entries.length} entries`,"",'data-go="activity"'),
-  ],canSave()?"Your data lives only on this device. Clearing your browser's site data deletes it, so save a backup now and then and keep the file somewhere private.":"")}
+  ],canSave()?"Your data lives only on this device. Save a backup now and then and keep the file somewhere private, like iCloud Drive or Google Drive.":"")}
   <div id="restore-zone"></div>
   ${typeof exportBackup==="function"?gsec("App",[
-    `<details class="gi gdetails"><summary><div class="gl"><div>Add to home screen</div><div class="gsub">Open Clearway like an app, full screen and offline</div></div>${CHEV}</summary><div class="gsub" style="padding:4px 0 6px">iPhone: open in Safari, tap Share, then Add to Home Screen.<br>Android: open in Chrome, tap ⋮, then Add to Home screen or Install app.</div></details>`,
+    isStandalone()?"":`<details class="gi gdetails"><summary>${ico("Add to home screen")}<div class="gl"><div>Add to home screen</div><div class="gsub">Open Clearway like an app, full screen and offline</div></div>${CHEV}</summary><div class="gsub" style="padding:4px 0 6px">iPhone: open in Safari, tap Share, then Add to Home Screen.<br>Android: open in Chrome, tap ⋮, then Add to Home screen or Install app.</div></details>`,
     gi("Keyboard shortcuts","P logs a payment, D adds a debt, Esc closes a window",""),
   ]):""}
   ${gsec("Help",[
@@ -1109,16 +1150,16 @@ function vSettings(){
     faq("Is my data private?",mode==="db"?"It's saved to your Claude account and only you can read it.":"Yes. Everything stays on this device. There's no account, no tracking and no server. The page is also blocked from sending data anywhere."),
     faq("Privacy","Clearway has no account, no analytics and no adverts. Your figures are stored in this browser on this device and are never uploaded. Backups and exports are files you choose where to keep."),
     faq("About Clearway","Built for paying off debt and building a safety net, with snowball, avalanche and 0% planning. Fonts: Bricolage Grotesque and IBM Plex Sans (SIL Open Font Licence)."),
-    `<a class="gi gi-btn" href="https://github.com/TIJT/clearway/issues/new" target="_blank" rel="noopener"><div class="gl"><div>Report a problem or suggest a feature</div><div class="gsub">Opens a public form on GitHub. Never include your figures.</div></div>${CHEV}</a>`,
+    `<a class="gi gi-btn" href="https://github.com/TIJT/clearway/issues/new" target="_blank" rel="noopener">${ico("Report a problem or suggest a feature")}<div class="gl"><div>Report a problem or suggest a feature</div><div class="gsub">Opens a public form on GitHub. Never include your figures.</div></div>${CHEV}</a>`,
     gi("Version","Clearway 1.6 · works offline",""),
   ])}
-  ${gsec("Start over",[`<div class="gi" id="reset-zone"><div class="gl"><div class="owed" style="font-weight:600">Delete everything</div><div class="gsub">Every debt, payment, budget and fund entry. This can't be undone.</div></div><button class="btn small danger" data-action="reset-ask">Delete</button></div>`])}
+  ${gsec("Start over",[`<div class="gi" id="reset-zone">${ico("Delete everything")}<div class="gl"><div class="owed" style="font-weight:600">Delete everything</div><div class="gsub">Every debt, payment, budget and fund entry. This can't be undone.</div></div><button class="btn small danger" data-action="reset-ask">Delete</button></div>`])}
   </div>`;
 }
 function vCategories(){
   const m=ensureMonth(monthKey());
   const grip='<svg viewBox="0 0 20 20" width="18" height="18" fill="currentColor" aria-hidden="true"><circle cx="7" cy="5" r="1.5"/><circle cx="13" cy="5" r="1.5"/><circle cx="7" cy="10" r="1.5"/><circle cx="13" cy="10" r="1.5"/><circle cx="7" cy="15" r="1.5"/><circle cx="13" cy="15" r="1.5"/></svg>';
-  return `<div class="topbar"><div><button class="btn ghost small backbtn desk-only" data-go="settings">‹ Settings</button><h1>Categories</h1><div class="sub">Drag ⋮⋮ to reorder. Swipe a category left to delete it.</div></div><div class="actions"><button class="btn primary" data-action="add-group">Add group</button></div></div>
+  return `<div class="topbar"><div><button class="btn ghost small backbtn desk-only" data-go="settings">‹ Settings</button><h1>Categories</h1><div class="sub">Drag ⋮⋮ to reorder. Swipe a category left to delete it.</div></div><div class="actions desk-only"><button class="btn primary" data-action="add-group">Add group</button></div></div>
   <div class="settings">
   ${S.budget.groups.map(g=>`<section class="gsec"><div class="gh-row"><input class="gh-input" value="${esc(g.name)}" data-action="rename-group" data-id="${g.id}" aria-label="Group name"><label class="gtiny">Essential ${toggle("ess-"+g.id,g.essential,"essential-toggle","Essential")}</label></div>
     <div class="glist" data-group="${g.id}">${g.cats.map(c=>`<div class="swipe" data-cat="${c.id}"><button class="swipe-del" data-action="del-cat" data-id="${c.id}" tabindex="-1">Delete</button><div class="gi swipe-row"><span class="grip" aria-label="Drag to reorder ${esc(c.name)}" role="button" tabindex="0" data-grip="${c.id}">${grip}</span><input class="ginput ginput-wide" value="${esc(c.name)}" data-action="rename-cat" data-id="${c.id}" aria-label="Category name"><span class="gv">${money(m.assigned[c.id]||0,{whole:true})}</span><button class="iconbtn hover-only" data-action="del-cat" data-id="${c.id}" aria-label="Delete ${esc(c.name)}">${I.trash}</button></div></div>`).join("")}
@@ -1151,7 +1192,7 @@ document.addEventListener("pointerup",()=>{
 document.addEventListener("keydown",e=>{const h=e.target.closest&&e.target.closest("[data-grip]");if(!h||!["ArrowUp","ArrowDown"].includes(e.key))return;e.preventDefault();
   const id=h.dataset.grip,g=S.budget.groups.find(g=>g.cats.some(c=>c.id===id)),i=g.cats.findIndex(c=>c.id===id),j=i+(e.key==="ArrowUp"?-1:1);if(j<0||j>=g.cats.length)return;
   [g.cats[i],g.cats[j]]=[g.cats[j],g.cats[i]];if(isExample)leaveExampleSilently();commit();document.querySelector('[data-grip="'+id+'"]')?.focus()});
-function faq(q,a){return `<details class="gi gdetails"><summary><div class="gl"><div>${q}</div></div>${CHEV}</summary><div class="gsub faq-a">${a}</div></details>`}
+function faq(q,a){return `<details class="gi gdetails"><summary>${ico(q.endsWith("?")?q:q)}<div class="gl"><div>${q}</div></div>${CHEV}</summary><div class="gsub faq-a">${a}</div></details>`}
 function exportICS(){
   const ds=activeDebts().filter(d=>d.dueDay);if(!ds.length){toast("Add a due day to a debt first.");return}
   const now=new Date(),stamp=now.toISOString().replace(/[-:]/g,"").split(".")[0]+"Z";
@@ -1169,6 +1210,89 @@ function exportCSV(){
   rows.unshift(rows.splice(rows.findIndex(r=>r[0]==="Date"),1)[0]);
   saveFile("clearway-activity-"+todayStr()+".csv",rows.map(r=>r.map(q).join(",")).join("\n"),"text/csv").then(ok=>{if(ok)toast("Activity exported.")});
 }
+
+/* ---------- bank statement import (CSV), all on this device ---------- */
+function parseCSV(text){
+  const rows=[];let row=[],cell="",q=false;
+  for(let i=0;i<text.length;i++){const c=text[i];
+    if(q){if(c==='"'){if(text[i+1]==='"'){cell+='"';i++}else q=false}else cell+=c}
+    else if(c==='"')q=true;else if(c===","||c===";"&&!text.includes(",")){row.push(cell);cell=""}
+    else if(c==="\n"||c==="\r"){if(c==="\r"&&text[i+1]==="\n")i++;row.push(cell);rows.push(row);row=[];cell=""}
+    else cell+=c}
+  if(cell||row.length){row.push(cell);rows.push(row)}
+  return rows.map(r=>r.map(x=>x.trim())).filter(r=>r.some(Boolean));
+}
+const MON={jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
+function parseDate(s){
+  s=s.trim();let m;
+  if(m=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/))return `${m[1]}-${pad(+m[2])}-${pad(+m[3])}`;
+  if(m=s.match(/^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{2,4})/)){const y=m[3].length===2?"20"+m[3]:m[3];return `${y}-${pad(+m[2])}-${pad(+m[1])}`}
+  if(m=s.match(/^(\d{1,2})[\s\-]([A-Za-z]{3})[A-Za-z]*[\s\-](\d{2,4})/)){const mo=MON[m[2].toLowerCase()];if(mo){const y=m[3].length===2?"20"+m[3]:m[3];return `${y}-${pad(mo)}-${pad(+m[1])}`}}
+  return null;
+}
+const CAT_RULES=[[/groc/i,/tesco|sainsbury|asda|aldi|lidl|morrisons|waitrose|co-?op|ocado|iceland|m&s food|spar/i],[/transport/i,/\btfl\b|trainline|uber(?! ?eats)|shell|\bbp\b|esso|texaco|petrol|parking|rail|bus|national express/i],[/eat/i,/deliveroo|just ?eat|uber ?eats|mcdonald|kfc|nando|costa|starbucks|pret|greggs|restaurant|cafe|pub|pizza|burger/i],[/subs/i,/netflix|spotify|disney|prime video|amazon prime|apple\.com|icloud|google|youtube|now tv|audible|patreon/i],[/phone|internet/i,/vodafone|\bee\b|\bo2\b|three|\bbt\b|\bsky\b|virgin|plusnet|talktalk|giffgaff|tesco mobile/i],[/energy|water|util/i,/octopus|british gas|edf|e\.?on|ovo|thames water|water|scottish power|bulb|council tax/i],[/rent|mortgage/i,/rent|mortgage|letting|landlord/i],[/insur/i,/insurance|aviva|admiral|direct line|axa|lv=|churchill|hastings/i]];
+function suggestFor(desc){
+  const d=desc.toLowerCase();
+  for(const debt of activeDebts()){const n=debt.name.toLowerCase();const first=n.split(/\s+/).find(w=>w.length>=4&&!/card|loan|credit|store|finance/.test(w));if(d.includes(n)||(first&&d.includes(first)))return "debt:"+debt.id}
+  const cats=allCats();
+  for(const [catRe,re] of CAT_RULES){if(re.test(desc)){const c=cats.find(c=>catRe.test(c.name));if(c)return "cat:"+c.id}}
+  return "skip";
+}
+let pendingImport=null;
+function readStatement(input){
+  const f=input.files&&input.files[0];input.value="";if(!f)return;
+  f.text().then(text=>{
+    const rows=parseCSV(text);
+    const hi=rows.findIndex(r=>r.some(c=>/date/i.test(c)));
+    if(hi<0){toast("Couldn't find a Date column. Download the statement as CSV from your bank and try again.");return}
+    const h=rows[hi].map(c=>c.toLowerCase());
+    const col=re=>h.findIndex(c=>re.test(c));
+    const di=col(/date/),ai=col(/^amount|^value|amount \(/),dbi=col(/debit|paid out|money out|withdraw|out$/),cri=col(/credit|paid in|money in|deposit|in$/);
+    let xi=-1;for(const re of [/desc/,/narrative/,/payee|merchant|counter ?party/,/name/,/details|memo/,/reference/,/^transaction$/]){xi=h.findIndex((c,i)=>i!==di&&!/\bid\b|number|no\.?$/.test(c)&&re.test(c));if(xi>=0)break}if(xi<0)xi=h.findIndex((c,i)=>i!==di&&i!==ai&&i!==dbi&&i!==cri);
+    if(ai<0&&dbi<0){toast("Couldn't find an amount column in that file.");return}
+    const items=[];let incoming=0,dup=0;
+    rows.slice(hi+1).forEach(r=>{
+      const date=parseDate(r[di]||"");if(!date)return;
+      let amt;if(ai>=0){amt=parseMoney(r[ai]);if(!isFinite(amt))return;if(amt>=0){incoming++;return}amt=-amt}
+      else{amt=parseMoney(r[dbi]);if(!(amt>0)){if(parseMoney(r[cri])>0)incoming++;return}}
+      const desc=(r[xi]||"").replace(/\s+/g," ").trim()||"Card payment";
+      if(S.txns.some(t=>t.date===date&&Math.abs(t.amount-amt)<0.005)||S.payments.some(p=>p.date===date&&Math.abs(p.amount-amt)<0.005)){dup++;return}
+      items.push({date,desc,amount:round2(amt),to:suggestFor(desc)});
+    });
+    if(!items.length){toast(dup?"Everything in that statement is already in Clearway.":"No spending found in that file.");return}
+    pendingImport=items;openImport(incoming,dup);
+  });
+}
+function openImport(incoming,dup){
+  const items=pendingImport;const debts=activeDebts();const cats=allCats();
+  const opts=sel=>`<option value="skip" ${sel==="skip"?"selected":""}>Don't import</option><optgroup label="Debt payment">${debts.map(d=>`<option value="debt:${d.id}" ${sel==="debt:"+d.id?"selected":""}>${esc(d.name)}</option>`).join("")}</optgroup>${S.budget.groups.map(g=>`<optgroup label="${esc(g.name)}">${g.cats.map(c=>`<option value="cat:${c.id}" ${sel==="cat:"+c.id?"selected":""}>${esc(c.name)}</option>`).join("")}</optgroup>`).join("")}`;
+  const label=v=>v==="skip"?"Don't import":v.startsWith("debt:")?"Payment to "+(debts.find(d=>"debt:"+d.id===v)?.name||"debt"):(cats.find(c=>"cat:"+c.id===v)?.name||"Category");
+  const count=()=>{const n=items.filter(i=>i.to!=="skip");const b=document.getElementById("imp-go");if(b)b.disabled=!n.length;return n.length?`Import ${n.length} of ${items.length}`:"Choose where they go"};
+  openModal(`<h2>Import statement</h2>
+    <p class="muted" style="margin:0">Found ${items.length} payment${items.length>1?"s":""} out${incoming?`, and skipped ${incoming} payment${incoming>1?"s":""} in`:""}${dup?`, plus ${dup} already in Clearway`:""}. Check where each one goes. Clearway matched what it could.</p>
+    <div class="imp-list">${items.map((it,i)=>`<div class="imp-row"><div class="imp-main"><div class="imp-desc">${esc(it.desc)}</div><div class="gsub">${fmtDate(it.date)}</div></div><div class="imp-amt">${money(it.amount)}</div><button class="imp-pick" data-i="${i}" aria-label="Where ${esc(it.desc)} goes"><span class="imp-dot ${it.to==="skip"?"off":it.to.startsWith("debt:")?"debt":"cat"}"></span><span>${esc(label(it.to))}</span>${CHEV}</button></div>`).join("")}</div>
+    <div class="modal-actions"><button class="btn ghost" data-close>Cancel</button><button class="btn primary" id="imp-go">${count()}</button></div>`,m=>{
+    m.addEventListener("click",e=>{const b=e.target.closest(".imp-pick");if(!b)return;const i=+b.dataset.i;const it=items[i];
+      const list=m.querySelector(".imp-list"),saved=list.scrollTop;
+      const row=(v,t,sub)=>`<button class="imp-opt" data-v="${v}" data-q="${esc(t.toLowerCase())}" aria-pressed="${it.to===v}"><span class="imp-dot ${v==="skip"?"off":v.startsWith("debt:")?"debt":"cat"}"></span><span class="gl"><span>${esc(t)}</span>${sub?`<span class="gsub">${sub}</span>`:""}</span>${it.to===v?'<span class="imp-tick">✓</span>':""}</button>`;
+      const pick=document.createElement("div");pick.className="imp-picker";
+      pick.innerHTML=`<div class="imp-ph"><button class="nb-back" data-pback><svg viewBox="0 0 12 20" width="11" height="18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2L2 10l8 8"/></svg>Back</button><strong class="imp-pt">${esc(it.desc.toLowerCase().replace(/\b\w/g,c=>c.toUpperCase()))}</strong><span></span></div><div class="imp-search"><input type="search" placeholder="Search categories and debts" aria-label="Search"></div><div class="imp-opts">${row("skip","Don't import","")}<div class="gh">Debt payment</div>${debts.map(d=>row("debt:"+d.id,d.name,money(balance(d),{whole:true})+" left")).join("")}${S.budget.groups.map(g=>`<div class="gh">${esc(g.name)}</div>`+g.cats.map(c=>row("cat:"+c.id,c.name,"")).join("")).join("")}</div>`;
+      m.appendChild(pick);
+      pick.querySelector(".imp-search input").addEventListener("input",ev=>{const q=ev.target.value.trim().toLowerCase();pick.querySelectorAll(".imp-opt").forEach(o=>o.hidden=!!q&&!o.dataset.q.includes(q));pick.querySelectorAll(".imp-opts .gh").forEach(h=>{let n=h.nextElementSibling,any=false;while(n&&!n.classList.contains("gh")){if(!n.hidden)any=true;n=n.nextElementSibling}h.hidden=!!q&&!any})});
+      pick.addEventListener("click",ev=>{const o=ev.target.closest("[data-v]");if(o){it.to=o.dataset.v;b.querySelector("span:nth-child(2)").textContent=label(it.to);b.querySelector(".imp-dot").className="imp-dot "+(it.to==="skip"?"off":it.to.startsWith("debt:")?"debt":"cat");$("#imp-go").textContent=count()}
+        if(o||ev.target.closest("[data-pback]")){pick.remove();list.scrollTop=saved}});
+    });
+    count();$("#imp-go").onclick=()=>{
+      let p=0,t=0;const before=JSON.stringify({payments:S.payments,txns:S.txns});
+      items.forEach(it=>{const ts=new Date(it.date+"T12:00").getTime();
+        if(it.to.startsWith("debt:")){S.payments.push({id:uid(),debtId:it.to.slice(5),amount:it.amount,date:it.date,ts,note:it.desc});p++}
+        else if(it.to.startsWith("cat:")){S.txns.push({id:uid(),catId:it.to.slice(4),amount:it.amount,date:it.date,ts,note:it.desc});materialise(pk(it.date));t++}});
+      if(isExample)leaveExampleSilently();pendingImport=null;modalClose();commit();
+      toast(`Imported ${p} debt payment${p===1?"":"s"} and ${t} purchase${t===1?"":"s"}.`,()=>{const o=JSON.parse(before);S.payments=o.payments;S.txns=o.txns;commit()});
+    };
+  });
+}
+document.addEventListener("change",e=>{if(e.target.id==="csv-file")readStatement(e.target)});
 
 /* ---------- app lock (privacy screen, not encryption) ---------- */
 const LOCK_KEY="clearway-lock";
@@ -1200,7 +1324,14 @@ function keypad(title,sub,onDone,opts={}){
 }
 function showLock(){
   const lk=lockInfo();if(!lk)return;
-  keypad("Clearway is locked","Enter your PIN",async(p)=>{if(await hashPin(lk.salt,p)===lk.hash){const h=document.getElementById("lock");h.hidden=true;h.innerHTML="";return true}const s=document.getElementById("kp-sub");if(s)s.textContent="That PIN didn't match. Try again.";return false},
+  keypad("Clearway is locked","Enter your PIN",async(p)=>{
+      const st=JSON.parse(localStorage.getItem("clearway-fails")||'{"n":0,"until":0}');const sub=document.getElementById("kp-sub");
+      if(Date.now()<st.until){if(sub)sub.textContent="Too many tries. Wait "+Math.ceil((st.until-Date.now())/1000)+" seconds.";return false}
+      if(await hashPin(lk.salt,p)===lk.hash){localStorage.removeItem("clearway-fails");const h=document.getElementById("lock");h.hidden=true;h.innerHTML="";return true}
+      st.n++;if(lk.wipe&&st.n>=10){[LS_KEY,LOCK_KEY,PTS_KEY,"clearway-fails"].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});location.reload();return false}
+      if(st.n>=5)st.until=Date.now()+30000*Math.pow(2,st.n-5);localStorage.setItem("clearway-fails",JSON.stringify(st));
+      if(sub)sub.textContent=st.n>=5?`Wrong PIN. Wait ${Math.round((st.until-Date.now())/1000)} seconds before trying again.`:`That PIN didn't match. ${(lk.wipe?10:5)-st.n} tr${(lk.wipe?10:5)-st.n===1?"y":"ies"} left${lk.wipe?" before everything is erased":" before a wait"}.`;
+      return false},
     {full:true,bio:!!lk.bio,forgot:root=>{root.querySelector("#kp-sub").innerHTML='The PIN can\'t be recovered. To get back in, delete all data on this device and restore from a backup. <button class="btn small danger" data-k-reset>Delete all data</button>';
       root.querySelector("[data-k-reset]").onclick=()=>{try{localStorage.removeItem(LS_KEY);localStorage.removeItem(LOCK_KEY)}catch(e){}location.reload()}}});
 }
@@ -1233,23 +1364,23 @@ document.addEventListener("visibilitychange",()=>{if(document.hidden)cover(true)
 document.addEventListener("visibilitychange",()=>{const lk=lockInfo();if(document.hidden)hiddenAt=Date.now();else if(lk&&hiddenAt&&Date.now()-hiddenAt>=(lk.after??60000)&&document.getElementById("lock").hidden)showLock()});
 
 /* ---------- render ---------- */
-function applyPrefs(){const r=document.documentElement;const t=S.theme||"system";if(t==="system")r.removeAttribute("data-theme");else r.setAttribute("data-theme",t);document.body.classList.toggle("hide-amounts",!!S.hide)}
+function applyPrefs(){const r=document.documentElement;document.body.classList.toggle("text-large",S.textSize==="large");document.body.classList.toggle("text-xl",S.textSize==="xl");const t=S.theme||"system";if(t==="system")r.removeAttribute("data-theme");else r.setAttribute("data-theme",t);document.body.classList.toggle("hide-amounts",!!S.hide)}
 function render(){
   if(!S)return;
   const navHtml=VIEWS.map(([k,l])=>`<button data-go="${k}" ${(view==="categories"?"settings":view)===k?'aria-current="page"':""}>${I[k]}${l}</button>`).join("");
   $("#nav").innerHTML=navHtml;
   const tb=TABS.map(([k,l])=>`<button data-go="${k}" ${(TAB_OF[view]||view)===k?'aria-current="page"':""}>${I[k]}${l}</button>`);if(!BACK_OF[view]||view==="activity")tb.splice(2,0,`<button class="tab-add" data-action="quick-add" aria-label="Add: log a payment, spending or savings"><span>+</span></button>`);$("#tabs").innerHTML=tb.join("");
-  applyPrefs();
+  applyPrefs();document.body.classList.toggle("pushed",!!BACK_OF[view]);
   const f={overview:vOverview,debts:vDebts,plan:vPlan,budget:vBudget,fund:vFund,activity:vActivity,settings:vSettings,categories:vCategories}[view];
   const sx=window.scrollY;
   $("#view").innerHTML=f();
-  {const bk=BACK_OF[view];if(bk){const t=VIEWS.find(x=>x[0]===view)?.[1]||"Categories";$("#view").insertAdjacentHTML("afterbegin",`<div class="navbar mobile-only"><button class="nb-back" data-go="${bk[0]}"><svg viewBox="0 0 12 20" width="11" height="18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2L2 10l8 8"/></svg>${bk[1]}</button><span class="nb-title">${t}</span><span></span></div>`)}}
+  {const bk=BACK_OF[view];if(bk){const t=VIEWS.find(x=>x[0]===view)?.[1]||"Categories";$("#view").insertAdjacentHTML("afterbegin",`<div class="navbar mobile-only"><button class="nb-back" data-go="${bk[0]}"><svg viewBox="0 0 12 20" width="11" height="18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2L2 10l8 8"/></svg>${bk[1]}</button><span class="nb-title">${t}</span>${view==="categories"?`<button class="nb-act" data-action="add-group" aria-label="Add group">+</button>`:"<span></span>"}</div>`)}}
   {const v=$("#view"),tb=v.querySelector(".topbar"),sn=v.querySelector(".subnav"),ex=v.querySelector(".note.example"),ck=view==="debts"?v.querySelector(".checks"):null;if(tb&&sn)tb.after(sn);if(ck&&(sn||tb))(sn||tb).after(ck);if(tb&&ex&&view!=="overview")(sn||tb).after(ex)}
   window.scrollTo(0,sx);
   const ce=$("#cell-edit");if(ce){ce.focus();ce.select()}
   if(isExample)setSaveState("Example data — nothing saved yet");
 }
-function go(v){view=v;try{history.replaceState(null,"","#"+v)}catch(e){}editing=null;render();window.scrollTo(0,0);const el=$("#view");el.classList.remove("enter");void el.offsetWidth;el.classList.add("enter")}
+function go(v){document.body.classList.remove("scrolled");view=v;try{history.replaceState(null,"","#"+v)}catch(e){}editing=null;render();window.scrollTo(0,0);const el=$("#view");el.classList.remove("enter");void el.offsetWidth;el.classList.add("enter")}
 
 /* ---------- modals ---------- */
 let modalClose=null;
@@ -1395,6 +1526,9 @@ document.addEventListener("click",e=>{
     case "lock-change":setupPin(true);break;
     case "export-csv":exportCSV();break;
     case "export-ics":exportICS();break;
+    case "wipe-toggle":{const lk=lockInfo();if(lk){lk.wipe=!lk.wipe;localStorage.setItem(LOCK_KEY,JSON.stringify(lk));render();toast(lk.wipe?"After 10 wrong PINs, everything on this device will be erased.":"Wrong PINs now only add a waiting time.")}break}
+    case "install-help":openModal(`<h2>Install Clearway</h2><div class="glist"><div class="gi">${ico("Add to home screen")}<div class="gl"><div>iPhone</div><div class="gsub">Open this page in Safari, tap Share, then Add to Home Screen.</div></div></div><div class="gi">${ico("Add to home screen")}<div class="gl"><div>Android</div><div class="gsub">Open in Chrome, tap ⋮, then Install app.</div></div></div></div><p class="muted" style="margin:0">Then open Clearway from its icon. It runs full screen, works offline, and your data is protected from automatic clean-up.</p><div class="modal-actions"><button class="btn primary" data-close>Done</button></div>`);break;
+    case "text-size":S.textSize=b.dataset.v;if(isExample)render();else commit();break;
     case "scroll-promo":{const n=document.querySelector(".promo-note.bad");if(n){n.scrollIntoView({behavior:"smooth",block:"center"});n.animate&&n.animate([{boxShadow:"0 0 0 3px var(--owed)"},{boxShadow:"0 0 0 0 transparent"}],{duration:1200})}break}
     case "cover-toggle":S.cover=S.cover===false;if(isExample)render();else commit();break;
     case "open-points":openPoints();break;
@@ -1443,6 +1577,11 @@ document.addEventListener("change",e=>{
   const t=e.target;const a=t.dataset.action;
   if(a==="extra-input"){const v=parseMoney(t.value);S.extra=v>=0?v:0;commit()}
   else if(a==="currency"){S.currency=t.value;fmtCache={};commit()}
+  else if(a==="backup-every"){S.alerts=S.alerts||{};if(t.value==="0")S.alerts.backup=false;else{S.alerts.backup=true;S.backupEvery=+t.value}if(isExample)leaveExampleSilently();commit()}
+  else if(a==="theme-sel"){S.theme=t.value;if(isExample)render();else commit()}
+  else if(a==="text-sel"){S.textSize=t.value;if(isExample)render();else commit()}
+  else if(a==="region-sel"){S.locale=t.value==="auto"?null:t.value;fmtCache={};if(isExample)render();else commit()}
+  else if(a==="strategy-sel"){if(t.value==="custom"&&S.strategy!=="custom"){plan().order.forEach((id,i)=>{const d=S.debts.find(x=>x.id===id);if(d)d.order=i})}S.strategy=t.value;if(isExample)render();else commit()}
   else if(a==="month-start"){S.monthStart=+t.value;budgetMonth=monthKey();if(isExample)leaveExampleSilently();commit();toast(S.monthStart===1?"Budgets now follow calendar months.":"Budget months now run from the "+ordinal(S.monthStart)+".")}
   else if(a==="set-income"){const v=parseMoney(t.value);if(v>=0){materialise(monthKey()).income=v;if(isExample)leaveExampleSilently();commit();toast("Income set to "+money(v,{whole:true})+" a month.")}}
   else if(a==="fund-name"){const v=t.value.trim();if(v){S.fund.name=v;if(isExample)leaveExampleSilently();commit()}}
@@ -1467,7 +1606,7 @@ document.addEventListener("focusout",e=>{
   if(isFinite(v)&&v>=0){const m=materialise(budgetMonth);if(kind==="income")m.income=v;else m.assigned[id]=v;if(isExample)leaveExampleSilently();commit()}else render();
 });
 
-window.addEventListener("scroll",()=>document.body.classList.toggle("scrolled",window.scrollY>48),{passive:true});
+window.addEventListener("scroll",()=>document.body.classList.toggle("scrolled",window.scrollY>64),{passive:true});
 window.addEventListener("hashchange",()=>{const h=location.hash.slice(1);if((VIEWS.some(v=>v[0]===h)||h==="categories")&&h!==view)go(h)});
 
 /* ---------- standalone: backup, storage protection, offline ---------- */
