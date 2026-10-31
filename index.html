@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; manifest-src 'self'; worker-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="robots" content="noindex">
@@ -163,6 +163,52 @@ tr.group td:last-child{border-radius:0 8px 8px 0}
 .fab{display:none}
 .mobile-only{display:none}
 @media (max-width:760px){.mobile-only{display:inline-flex}}
+html{-webkit-text-size-adjust:100%;touch-action:manipulation}
+body{-webkit-tap-highlight-color:transparent;overscroll-behavior-y:none}
+.promo-note{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:12px 14px;border-radius:10px;font-size:13.5px;color:var(--ink)}
+.promo-note.bad{background:var(--owed-soft)}.promo-note.good{background:var(--paid-soft)}
+@media (prefers-reduced-motion:no-preference){
+  .btn,.chip,.cellbtn,.nav button,.tabs button{transition:transform .08s ease,background-color .15s,border-color .15s}
+  .btn:active,.chip:active,.cellbtn:active,.tabs button:active{transform:scale(.96)}
+  #view.enter{animation:viewin .2s ease-out}
+  .overlay{animation:fadein .15s ease-out}
+  @keyframes viewin{from{opacity:.35;transform:translateY(6px)}to{opacity:1;transform:none}}
+  @keyframes fadein{from{opacity:0}to{opacity:1}}
+  @keyframes sheetin{from{transform:translateY(100%)}to{transform:none}}
+}
+@media (max-width:760px){
+  input,select,textarea{font-size:16px!important}
+  .money-in.huge input{font-size:30px!important}
+  .overlay{align-items:flex-end;padding:0}
+  .modal{width:100%;border-radius:20px 20px 0 0;max-height:92%;padding:10px 18px calc(18px + env(safe-area-inset-bottom,0px));animation:sheetin .24s cubic-bezier(.2,.8,.2,1)}
+  .modal::before{content:"";display:block;flex:none;width:40px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 2px}
+  .modal-actions .btn{flex:1;padding:13px}
+  .btn{min-height:44px}.btn.small{min-height:36px}
+  .tabs{background:color-mix(in srgb,var(--surface) 88%,transparent);-webkit-backdrop-filter:saturate(1.6) blur(14px);backdrop-filter:saturate(1.6) blur(14px)}
+  .tabs button{position:relative;padding:6px 2px}
+  .tabs button[aria-current="page"]::before{content:"";position:absolute;top:-6px;left:30%;right:30%;height:3px;border-radius:0 0 3px 3px;background:var(--accent)}
+  .topbar h1{font-size:26px}
+  .panel{padding:16px;border-radius:14px}
+  .tablewrap{margin:0 -16px;padding:0 16px}
+  .wrap,.grid{gap:14px}
+  .note.example{padding:10px 12px;font-size:13px}
+  .chips .chip{min-height:44px}
+  .toast{bottom:calc(84px + env(safe-area-inset-bottom,0px));width:max-content;max-width:calc(100% - 32px);font-size:13.5px;line-height:1.35}
+  .btable thead{display:none}
+  .btable,.btable tbody{display:block}
+  .btable tr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:8px;padding:12px 0;border-bottom:1px solid var(--line)}
+  .btable td{border:0!important;padding:0!important;text-align:left!important;white-space:normal;background:none!important}
+  .btable td:first-child{grid-column:1/-1;margin-bottom:8px}
+  .btable td:nth-child(n+2)::before{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);font-weight:600;margin-bottom:2px}
+  .btable td:nth-child(2)::before{content:"Assigned"}.btable td:nth-child(3)::before{content:"Spent"}.btable td:nth-child(4)::before{content:"Available"}
+  .btable tr.group{background:var(--surface-2);border-radius:10px;padding:9px 12px;margin-top:12px;border:0}
+  .btable tr.group td:first-child{margin-bottom:2px}
+  .btable tr.group td::before{display:none}
+  .btable tr.over{background:var(--owed-soft);border-radius:10px;padding:12px 10px}
+  .btable .cellbtn{padding:4px 0;font-weight:600}
+  .btable .bar.thin{max-width:none!important}
+  .btable td:first-child>div{min-width:0!important}
+}
 .budget-grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:20px;align-items:start}
 tr.over td{background:var(--owed-soft)}
 .nextstep{display:flex;align-items:center;gap:12px;justify-content:space-between;flex-wrap:wrap;margin-top:16px;padding:12px 14px;border-radius:10px;background:var(--accent-soft)}
@@ -268,6 +314,7 @@ function example(){
   s.debts=[mk("Credit card","Credit card",2840,24.9,85,14,PALETTE[0]),mk("Store card","Store card",620,29.9,25,22,PALETTE[1]),
            mk("Car finance","Loan",7200,7.9,215,1,PALETTE[2]),mk("Overdraft","Overdraft",900,39.9,30,28,PALETTE[3])];
   const [cc,st,car,od]=s.debts;
+  cc.name="Balance transfer card";cc.promoApr=0;cc.promoEnd=keyFromIndex(nowIdx()+4);
   for(let m=6;m>=0;m--){
     const day=m===0?Math.min(now.getDate(),20):20;
     if(m===0&&now.getDate()<2)continue;
@@ -293,6 +340,19 @@ const totalOwed=()=>sum(S.debts,balance);
 const totalOriginal=()=>sum(S.debts,d=>d.original);
 const totalPaid=()=>sum(S.payments,p=>p.amount);
 const fundBalance=()=>round2(sum(S.fund.entries,e=>e.amount));
+/* 0% and other promo periods: promoApr applies up to and including the promoEnd month */
+const rateAt=(d,idx)=>d.promoEnd&&idx<=mIndex(d.promoEnd)?(+d.promoApr||0):(+d.apr||0);
+const onPromo=d=>!!d.promoEnd&&mIndex(d.promoEnd)>=nowIdx();
+const fmtRate=r=>(+r%1?(+r).toFixed(1):String(+r))+"%";
+function promoInfo(d){
+  if(!onPromo(d))return null;
+  const end=mIndex(d.promoEnd),p=plan(),b=balance(d);
+  let left=b;
+  if(p.paidOff[d.id]!=null&&p.paidOff[d.id]<=end)left=0;
+  else{const r=p.months.find(r=>r.idx===end);if(r)left=r.bals[d.id]||0;else if(p.months.length&&end>p.months[p.months.length-1].idx)left=0}
+  const n=Math.max(1,end-nowIdx());
+  return {end,left:round2(left),need:round2(b/n),monthsLeft:end-nowIdx()};
+}
 
 function orderDebts(list,strategy){
   const a=[...list];
@@ -302,21 +362,28 @@ function orderDebts(list,strategy){
   return a;
 }
 function simulate(strategy,extra,rollover=true){
-  let ds=S.debts.map(d=>({id:d.id,name:d.name,apr:+d.apr||0,min:+d.min||0,b:balance(d),order:d.order})).filter(d=>d.b>0.005);
+  let ds=S.debts.map(d=>({id:d.id,name:d.name,apr:+d.apr||0,promoApr:d.promoApr,promoEnd:d.promoEnd,min:+d.min||0,b:balance(d),order:d.order})).filter(d=>d.b>0.005);
+  const start=nowIdx()+1;
+  // avalanche ranks by today's rate, so a 0% card waits until its promo ends
+  ds.forEach(d=>{d.apr0=d.apr;d.apr=rateAt(d,start)});
   const ordered=orderDebts(ds,strategy);
+  ds.forEach(d=>{d.apr=d.apr0});
   const budget=sum(ds,d=>d.min)+(rollover?(+extra||0):0);
-  const months=[];let totalInt=0;const paidOff={};const start=nowIdx()+1;
+  const months=[];let totalInt=0;const paidOff={};
   for(let m=0;m<600&&ds.some(d=>d.b>0.005);m++){
-    const row={idx:start+m,pays:{},interest:0};
-    ds.forEach(d=>{if(d.b>0.005){const i=d.b*d.apr/1200;d.b+=i;row.interest+=i;totalInt+=i}});
+    const idx=start+m,row={idx,pays:{},interest:0,bals:{}};
+    ds.forEach(d=>{if(d.b>0.005){const i=d.b*rateAt(d,idx)/1200;d.b+=i;row.interest+=i;totalInt+=i}});
     let avail=budget;
     ds.forEach(d=>{if(d.b>0.005){const p=Math.min(d.min,d.b);d.b-=p;avail-=p;row.pays[d.id]=p}});
-    if(rollover)for(const d of ordered){if(avail<=0.005)break;if(d.b>0.005){const p=Math.min(avail,d.b);d.b-=p;avail-=p;row.pays[d.id]=(row.pays[d.id]||0)+p}}
-    ds.forEach(d=>{if(d.b<=0.005&&paidOff[d.id]==null){d.b=0;paidOff[d.id]=start+m}});
+    const ord=strategy==="avalanche"?[...ds].sort((x,y)=>rateAt(y,idx)-rateAt(x,idx)||x.b-y.b):ordered;
+    if(rollover)for(const d of ord){if(avail<=0.005)break;if(d.b>0.005){const p=Math.min(avail,d.b);d.b-=p;avail-=p;row.pays[d.id]=(row.pays[d.id]||0)+p}}
+    ds.forEach(d=>{if(d.b<=0.005&&paidOff[d.id]==null){d.b=0;paidOff[d.id]=idx}row.bals[d.id]=d.b});
     row.balance=sum(ds,d=>d.b);row.total=sum(Object.values(row.pays));months.push(row);
   }
   const done=ds.every(d=>d.b<=0.005);
-  return {months,totalInt,paidOff,done,order:ordered.map(d=>d.id),budget,finish:done?(months.length?months[months.length-1].idx:nowIdx()):null};
+  let order=ordered.map(d=>d.id);
+  if(strategy!=="custom")order=[...order].sort((a,b)=>(paidOff[a]??1e9)-(paidOff[b]??1e9)||order.indexOf(a)-order.indexOf(b));
+  return {months,totalInt,paidOff,done,order,budget,finish:done?(months.length?months[months.length-1].idx:nowIdx()):null};
 }
 let planCache=null;
 const plan=()=>planCache||(planCache=simulate(S.strategy,S.extra));
@@ -511,7 +578,9 @@ function vOverview(){
   const nextOff=p.order.map(id=>S.debts.find(d=>d.id===id)).find(Boolean);
   const greeting=!S.debts.length&&!isExample;
   if(greeting)return topbar("Overview","")+`<div class="panel empty"><h2>Let's map what you owe</h2><p>Add each debt with its balance, interest rate and minimum payment. Clearway works out your debt-free date and the fastest order to pay them off.</p><button class="btn primary" data-action="add-debt">Add your first debt</button></div>`;
+  const promoAlerts=activeDebts().filter(d=>{const pi=promoInfo(d);return pi&&pi.left>0.5&&pi.monthsLeft<=6}).map(d=>promoNote(d,true).replace('style="grid-column:1/-1"',"")).join("");
   return `${exampleBanner()}
+  ${promoAlerts}
   ${topbar("Overview",`${MONTHS_L[new Date().getMonth()]} ${new Date().getFullYear()}`,`<button class="btn" data-action="add-debt">Add debt</button><button class="btn primary" data-action="log-payment">Log payment</button>`)}
   <div class="grid g-hero">
     <section class="panel">
@@ -564,12 +633,18 @@ function vDebts(){
   const owed=totalOwed();
   return `${exampleBanner()}${topbar("Debts",`${activeDebts().length} open · ${money(owed)} owed · ${money(sum(activeDebts(),d=>d.min))} a month in minimums`,`<button class="btn primary" data-action="add-debt">Add debt</button>`)}
   <section class="panel">${ds.length?ds.map((d,i)=>{const b=balance(d),pct=d.original?1-b/d.original:0;const done=b<=0.005;const po=p.paidOff[d.id];
-    return `<div class="debtcard"><div class="dc-name" style="display:flex;gap:12px;align-items:center;min-width:0">${ring(pct,d.color,46,6)}<div style="min-width:0"><div class="name" style="font-weight:600;font-size:15px">${esc(d.name)}</div><div class="muted">${esc(d.kind||"Debt")}${d.dueDay?` · due on the ${ordinal(d.dueDay)}`:""}</div><div style="margin-top:3px"><span class="pill ${+d.apr>=20?"bad":+d.apr>=10?"warn":"neutral"}">${(+d.apr).toFixed(1)}% APR</span></div></div></div>
+    return `<div class="debtcard"><div class="dc-name" style="display:flex;gap:12px;align-items:center;min-width:0">${ring(pct,d.color,46,6)}<div style="min-width:0"><div class="name" style="font-weight:600;font-size:15px">${esc(d.name)}</div><div class="muted">${esc(d.kind||"Debt")}${d.dueDay?` · due on the ${ordinal(d.dueDay)}`:""}</div><div style="margin-top:3px">${onPromo(d)?`<span class="pill good">${fmtRate(d.promoApr)} until ${mLabel(mIndex(d.promoEnd),true)}</span> <span class="muted" style="font-size:12.5px">then ${fmtRate(d.apr)}</span>`:`<span class="pill ${+d.apr>=20?"bad":+d.apr>=10?"warn":"neutral"}">${(+d.apr).toFixed(1)}% APR</span>`}</div></div></div>
       <div><div class="label">Balance</div><div style="font-weight:600;font-size:16px">${money(b)}</div><div class="muted">${Math.round(pct*100)}% paid of ${money(d.original,{whole:true})}</div></div>
       <div><div class="label">Minimum</div><div style="font-weight:600">${money(d.min)}</div><div class="muted">This month ${money(plannedThisMonth(d))}</div></div>
       <div><div class="label">${done?"Status":"Paid off by"}</div>${done?`<span class="pill good">Paid off</span>`:po?`<div style="font-weight:600">${mLabel(po,true)}</div><div class="muted">#${p.order.indexOf(d.id)+1} in plan</div>`:`<span class="pill bad">Not on track</span>`}</div>
-      <div class="dc-act" style="display:flex;gap:6px">${done?"":`<button class="btn small primary" data-action="pay-debt" data-id="${d.id}">Pay</button>`}<button class="btn small" data-action="edit-debt" data-id="${d.id}">Edit</button></div></div>`}).join(""):`<div class="empty"><h2>No debts yet</h2><p>Add credit cards, loans, overdrafts, buy-now-pay-later or money owed to family. Anything with a balance you want gone.</p><button class="btn primary" data-action="add-debt">Add a debt</button></div>`}
+      <div class="dc-act" style="display:flex;gap:6px">${done?"":`<button class="btn small primary" data-action="pay-debt" data-id="${d.id}">Pay</button>`}<button class="btn small" data-action="edit-debt" data-id="${d.id}">Edit</button></div>${promoNote(d)}</div>`}).join(""):`<div class="empty"><h2>No debts yet</h2><p>Add credit cards, loans, overdrafts, buy-now-pay-later or money owed to family. Anything with a balance you want gone.</p><button class="btn primary" data-action="add-debt">Add a debt</button></div>`}
   </section>`;
+}
+function promoNote(d,compact){
+  const pi=promoInfo(d);if(!pi||balance(d)<=0.005)return "";
+  const when=mLabel(pi.end,true),after=fmtRate(d.apr);
+  if(pi.left<=0.5)return `<div class="promo-note good" style="grid-column:1/-1"><strong class="paid">On track:</strong> your plan clears ${esc(d.name)} before the ${fmtRate(d.promoApr)} period ends in ${when}.</div>`;
+  return `<div class="promo-note bad" style="grid-column:1/-1"><div><strong class="owed">${money(pi.left,{whole:true})} will still be owed${compact?` on ${esc(d.name)}`:""} when ${fmtRate(d.promoApr)} ends in ${when}</strong>, and it will start costing ${after}. Pay about <strong>${money(pi.need,{whole:true})} a month</strong> to clear it in time${pi.monthsLeft>0?` (${pi.monthsLeft} payment${pi.monthsLeft>1?"s":""} left)`:""}, or move it to another 0% card before then.</div>${compact?"":`<button class="btn small" data-action="promo-prioritise" data-id="${d.id}">Pay it first in my plan</button>`}</div>`;
 }
 const ordinal=n=>n+(n%100>=11&&n%100<=13?"th":({1:"st",2:"nd",3:"rd"}[n%10]||"th"));
 function vPlan(){
@@ -612,7 +687,7 @@ function vPlan(){
     ${lineChart([{points:projMin,color:"var(--ink-3)",dash:true,width:1.8},{points:proj,color:"var(--accent)",fill:true}])}</section>
   <section class="panel"><div class="panel-head"><h2>Payoff order</h2></div>
     <div class="tablewrap"><table><thead><tr><th>#</th><th style="text-align:left">Debt</th><th>Balance</th><th>APR</th><th>Paid off</th><th>Interest</th>${S.strategy==="custom"?"<th>Move</th>":""}</tr></thead><tbody>
-    ${p.order.map((id,i)=>{const d=byId[id];const int=sum(p.months,r=>0)||0;return `<tr><td>${i+1}</td><td style="text-align:left"><span class="dot" style="display:inline-block;background:${d.color};margin-right:8px"></span>${esc(d.name)}</td><td>${money(balance(d))}</td><td>${(+d.apr).toFixed(2)}%</td><td>${p.paidOff[id]?mLabel(p.paidOff[id],true):"—"}</td><td>${money(interestFor(p,id),{whole:true})}</td>${S.strategy==="custom"?`<td><button class="btn ghost small" data-action="move" data-id="${id}" data-dir="-1" aria-label="Move up">↑</button><button class="btn ghost small" data-action="move" data-id="${id}" data-dir="1" aria-label="Move down">↓</button></td>`:""}</tr>`}).join("")}
+    ${p.order.map((id,i)=>{const d=byId[id];const int=sum(p.months,r=>0)||0;return `<tr><td>${i+1}</td><td style="text-align:left"><span class="dot" style="display:inline-block;background:${d.color};margin-right:8px"></span>${esc(d.name)}</td><td>${money(balance(d))}</td><td>${onPromo(d)?`${fmtRate(d.promoApr)} → ${fmtRate(d.apr)}<div class="muted" style="font-size:12px">from ${mLabel(mIndex(d.promoEnd)+1)}</div>`:`${(+d.apr).toFixed(2)}%`}</td><td>${p.paidOff[id]?mLabel(p.paidOff[id],true):"—"}</td><td>${money(interestFor(p,id),{whole:true})}</td>${S.strategy==="custom"?`<td><button class="btn ghost small" data-action="move" data-id="${id}" data-dir="-1" aria-label="Move up">↑</button><button class="btn ghost small" data-action="move" data-id="${id}" data-dir="1" aria-label="Move down">↓</button></td>`:""}</tr>`}).join("")}
     </tbody></table></div></section>
   <section class="panel"><div class="panel-head"><h2>Month by month</h2><span class="muted">Where every payment goes</span></div>
     <div class="tablewrap" style="max-height:480px;overflow:auto"><table><thead><tr><th>Month</th>${p.order.map(id=>`<th>${esc(byId[id].name)}</th>`).join("")}<th>Interest</th><th>Left owing</th></tr></thead><tbody>
@@ -621,8 +696,8 @@ function vPlan(){
 }
 function interestFor(p,id){
   // re-run cheaply: track per-debt interest
-  if(!p._int){p._int={};const ds=S.debts.map(d=>({id:d.id,apr:+d.apr||0,b:balance(d)}));const by=Object.fromEntries(ds.map(d=>[d.id,d]));
-    p.months.forEach(r=>{ds.forEach(d=>{if(d.b>0.005){const i=d.b*d.apr/1200;p._int[d.id]=(p._int[d.id]||0)+i;d.b+=i}});Object.entries(r.pays).forEach(([k,v])=>{by[k].b-=v})})}
+  if(!p._int){p._int={};const ds=S.debts.map(d=>({id:d.id,apr:+d.apr||0,promoApr:d.promoApr,promoEnd:d.promoEnd,b:balance(d)}));const by=Object.fromEntries(ds.map(d=>[d.id,d]));
+    p.months.forEach(r=>{ds.forEach(d=>{if(d.b>0.005){const i=d.b*rateAt(d,r.idx)/1200;p._int[d.id]=(p._int[d.id]||0)+i;d.b+=i}});Object.entries(r.pays).forEach(([k,v])=>{by[k].b-=v})})}
   return p._int[id]||0;
 }
 let budgetMonth=monthKey();
@@ -652,7 +727,7 @@ function vBudget(){
   <div class="budget-grid">
   <section class="panel" style="padding-bottom:8px">
     <div class="panel-head"><h2>Categories</h2><div style="display:flex;gap:8px"><button class="btn small" data-action="add-cat">Add category</button><button class="btn small primary" data-action="add-txn">Add spending</button></div></div>
-    <div class="tablewrap"><table><thead><tr><th style="text-align:left">Category</th><th>Assigned</th><th>Spent</th><th>Available</th></tr></thead><tbody>
+    <div class="tablewrap"><table class="btable"><thead><tr><th style="text-align:left">Category</th><th>Assigned</th><th>Spent</th><th>Available</th></tr></thead><tbody>
       ${groups.map(({g,as,sp,left})=>groupRow(esc(g.name),as,sp,left,g.essential?' <span class="muted" style="font-weight:400">· essential</span>':"")+g.cats.map(catRow).join("")).join("")}
       ${debtRows?groupRow("Debt payments",debtTotal,debtPaidK,debtLeft>0?debtLeft:0,' <span class="muted" style="font-weight:400">· from your plan</span>')+debtRows:""}
       ${groupRow("Savings",fAs,fIn,fundLeft)}
@@ -776,7 +851,7 @@ function render(){
   const ce=$("#cell-edit");if(ce){ce.focus();ce.select()}
   if(isExample)setSaveState("Example data — nothing saved yet");
 }
-function go(v){view=v;try{history.replaceState(null,"","#"+v)}catch(e){}editing=null;render();window.scrollTo(0,0)}
+function go(v){view=v;try{history.replaceState(null,"","#"+v)}catch(e){}editing=null;render();window.scrollTo(0,0);const el=$("#view");el.classList.remove("enter");void el.offsetWidth;el.classList.add("enter")}
 
 /* ---------- modals ---------- */
 let modalClose=null;
@@ -831,17 +906,24 @@ function openDebtModal(id){
       <div class="field"><label for="d-min">Minimum payment</label><div class="money-in"><span>${esc(curSymbol())}</span><input id="d-min" inputmode="decimal" value="${d?.min??""}" placeholder="0.00"></div></div>
       <div class="field"><label for="d-due">Due day of month</label><input id="d-due" type="number" min="1" max="31" value="${d?.dueDay??""}" placeholder="e.g. 15"></div>
       <div class="field full"><label for="d-kind">Type</label><select id="d-kind">${kinds.map(k=>`<option ${d?.kind===k?"selected":""}>${k}</option>`).join("")}</select></div>
+      <label class="full" style="display:flex;gap:10px;align-items:center;font-weight:600;cursor:pointer"><input type="checkbox" id="d-promo" ${d?.promoEnd?"checked":""} style="width:20px;height:20px;accent-color:var(--accent)"> It has a 0% or low-rate period</label>
+      <div class="field" data-promo ${d?.promoEnd?"":"hidden"}><label for="d-papr">Promo rate (%)</label><input id="d-papr" inputmode="decimal" value="${d?.promoApr??0}"></div>
+      <div class="field" data-promo ${d?.promoEnd?"":"hidden"}><label for="d-pend">Promo ends (last month)</label><input id="d-pend" type="month" value="${d?.promoEnd||""}" min="${monthKey()}"></div>
     </div>
     <div class="muted" id="d-err" aria-live="polite">${d?"Changing the balance resets it from today. Use this when a statement shows interest or charges were added.":"Only the name and balance are required. Add the rate and minimum for an accurate plan."}</div>
     <div class="modal-actions">${d?`<button class="btn danger ghost" id="d-del" style="margin-right:auto">Delete</button>`:""}<button class="btn ghost" data-close>Cancel</button><button class="btn primary" id="d-save">${d?"Save changes":"Add debt"}</button></div>`,m=>{
     $("#d-name").focus();
+    $("#d-promo").addEventListener("change",e=>{m.querySelectorAll("[data-promo]").forEach(x=>x.hidden=!e.target.checked);if(e.target.checked)$("#d-pend").focus()});
     const save=()=>{const name=$("#d-name").value.trim(),bal=parseMoney($("#d-bal").value),apr=parseMoney($("#d-apr").value||0),min=parseMoney($("#d-min").value||0),due=parseInt($("#d-due").value)||null;
+      const hasPromo=$("#d-promo").checked,pend=$("#d-pend").value,papr=parseMoney($("#d-papr").value||0);
       if(!name){$("#d-err").innerHTML='<span class="owed">Give the debt a name so you can recognise it.</span>';$("#d-name").focus();return}
       if(!(bal>=0)){$("#d-err").innerHTML='<span class="owed">Enter the balance you owe, for example 1250.</span>';$("#d-bal").focus();return}
+      if(hasPromo&&!/^\d{4}-\d{2}$/.test(pend)){$("#d-err").innerHTML='<span class="owed">Pick the last month of the 0% period. It\'s on your statement.</span>';$("#d-pend").focus();return}
       if(isExample)leaveExampleSilently();
-      if(d){if(Math.abs(bal-balance(d))>0.004){d.opening=bal;d.asOfTs=Date.now();if(bal>d.original)d.original=bal}Object.assign(d,{name,apr:apr||0,min:min||0,dueDay:due,kind:$("#d-kind").value});toast(`Saved ${name}.`)}
+      const promo=hasPromo?{promoApr:papr>=0?papr:0,promoEnd:pend}:{promoApr:null,promoEnd:null};
+      if(d){if(Math.abs(bal-balance(d))>0.004){d.opening=bal;d.asOfTs=Date.now();if(bal>d.original)d.original=bal}Object.assign(d,{name,apr:apr||0,min:min||0,dueDay:due,kind:$("#d-kind").value},promo);toast(`Saved ${name}.`)}
       else{const used=new Set(S.debts.map(x=>x.color));const color=PALETTE.find(c=>!used.has(c))||PALETTE[S.debts.length%PALETTE.length];
-        S.debts.push({id:uid(),name,kind:$("#d-kind").value,original:bal,opening:bal,asOfTs:Date.now(),apr:apr||0,min:min||0,dueDay:due,color,createdTs:Date.now(),order:S.debts.length});toast(`Added ${name}. Your plan is updated.`)}
+        S.debts.push({id:uid(),name,kind:$("#d-kind").value,original:bal,opening:bal,asOfTs:Date.now(),apr:apr||0,min:min||0,dueDay:due,color,createdTs:Date.now(),order:S.debts.length,...promo});toast(`Added ${name}. Your plan is updated.`)}
       modalClose();commit()};
     $("#d-save").onclick=save;
     m.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.tagName!=="SELECT"){e.preventDefault();save()}});
@@ -902,6 +984,7 @@ document.addEventListener("click",e=>{
     case "add-debt":openDebtModal();break;
     case "pay-debt":openPayModal(b.dataset.id,b.dataset.amount!=null?+b.dataset.amount:undefined);break;
     case "edit-debt":openDebtModal(b.dataset.id);break;
+    case "promo-prioritise":{const o=plan().order.filter(id=>id!==b.dataset.id);o.unshift(b.dataset.id);o.forEach((id,k)=>{const d=S.debts.find(x=>x.id===id);if(d)d.order=k});S.debts.forEach(d=>{if(!o.includes(d.id))d.order=o.length+1});S.strategy="custom";if(isExample)leaveExampleSilently();commit();const d=S.debts.find(x=>x.id===b.dataset.id);const pi=promoInfo(d);toast(pi&&pi.left>0.5?`${d.name} is now first. ${money(pi.left,{whole:true})} would still be left; add to your extra payment to close the gap.`:`${d.name} is now first and clears before its 0% ends.`);break}
     case "keep-example":leaveExample(false);break;
     case "clear-example":leaveExample(true);break;
     case "strategy":if(S.strategy==="custom"||b.dataset.v==="custom"){const p=plan();p.order.forEach((id,i)=>{const d=S.debts.find(x=>x.id===id);if(d&&b.dataset.v==="custom"&&S.strategy!=="custom")d.order=i})}S.strategy=b.dataset.v;commit();break;
