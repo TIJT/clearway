@@ -269,6 +269,10 @@ body.text-large main,body.text-large .modal{zoom:1.1}body.text-xl main,body.text
 a.gi{text-decoration:none;color:inherit}
 select.gselect{appearance:none;-webkit-appearance:none;border:0!important;background:transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%2371877E' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 8l3-3 3 3M7 12l3 3 3-3'/%3E%3C/svg%3E") no-repeat right 0 center/15px!important;padding:8px 20px 8px 6px!important;max-width:62%;color:var(--ink-3)!important;font-weight:400;text-align:right;text-align-last:right;font-size:15px}
 .qa-list{display:flex;flex-direction:column;gap:8px}
+.acc-row{gap:12px}.acc-row .gl{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px;font-weight:500}
+.acc-bal{font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
+.nw-card{all:unset;box-sizing:border-box;cursor:pointer;display:block;background:var(--surface);border:1px solid color-mix(in srgb,var(--line) 70%,transparent);border-radius:var(--r);padding:20px;box-shadow:var(--shadow)}
+.nw-card:focus-visible{outline:2px solid var(--accent)}.nw-card:hover{border-color:var(--line)}
 .paybar{display:flex;height:14px;border-radius:99px;overflow:hidden;margin-top:18px;background:rgba(255,255,255,.18);gap:2px}
 .paybar span{display:block;height:100%}
 .paylink{margin-top:4px;color:var(--accent);background:var(--accent-soft);border-color:transparent;justify-content:flex-start}
@@ -566,6 +570,9 @@ function example(){
   tx.forEach(([c,a,day])=>{if(day<=now.getDate()){const d=new Date(now.getFullYear(),now.getMonth(),day,12);s.txns.push({id:uid(),catId:c,amount:a,date:ds(d),ts:d.getTime(),note:""})}});
   for(let m=5;m>=0;m--){const dt=ago(m,25);if(dt<=now)s.fund.entries.push({id:uid(),amount:m===5?400:150,date:ds(dt),ts:dt.getTime(),note:m===5?"Starting balance":"Monthly top-up"})}
   const w=ago(2,9);s.fund.entries.push({id:uid(),amount:-180,date:ds(w),ts:w.getTime(),note:"Boiler repair"});
+  const acc=(name,type,bal,hist)=>({id:uid(),name,type,balance:bal,updatedTs:now.getTime()-864e5*3,history:hist.map((v,i)=>({date:ds(ago(hist.length-1-i,28)),balance:v}))});
+  s.accounts=[acc("Current account","current",1240,[880,1020,760,1310,1105,1180,1240]),acc("Savings","savings",2300,[1500,1600,1700,1850,2000,2150,2300])];
+  s.nw={};
   return s;
 }
 
@@ -719,7 +726,7 @@ function loadLocal(){
   else{S=example();isExample=true}
   render();
 }
-function migrate(s){const b=blank();s.budget=s.budget||b.budget;s.fund=s.fund||b.fund;s.txns=s.txns||[];s.payments=s.payments||[];s.debts=s.debts||[];return s}
+function migrate(s){const b=blank();s.accounts=s.accounts||[];s.nw=s.nw||{};s.budget=s.budget||b.budget;s.fund=s.fund||b.fund;s.txns=s.txns||[];s.payments=s.payments||[];s.debts=s.debts||[];return s}
 
 async function boot(){
   if(lockInfo())showLock();
@@ -769,15 +776,16 @@ const I={
   settings:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="10" cy="10" r="2.5"/><path d="M10 2.5v2M10 15.5v2M2.5 10h2M15.5 10h2M4.7 4.7l1.4 1.4M13.9 13.9l1.4 1.4M4.7 15.3l1.4-1.4M13.9 6.1l1.4-1.4"/></svg>',
 };
 Object.assign(I,{
+  accounts:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M3 8 10 3.5 17 8"/><path d="M4.5 8.5v6M8.5 8.5v6M11.5 8.5v6M15.5 8.5v6M3 16.5h14"/></svg>',
   trash:'<svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 6h12M8 6V4h4v2M6 6l1 10h6l1-10"/></svg>',
   lock:'<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="5" y="10" width="14" height="10" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>',
   eye:'<svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M2 10s3-5.5 8-5.5S18 10 18 10s-3 5.5-8 5.5S2 10 2 10z"/><circle cx="10" cy="10" r="2.5"/></svg>',
   eyeoff:'<svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 3l14 14M8.5 5c.5-.1 1-.2 1.5-.2 5 0 8 5.5 8 5.5a14 14 0 0 1-2.4 3M5.5 6.4C3.3 7.9 2 10.3 2 10.3s3 5.5 8 5.5c1.3 0 2.5-.4 3.5-.9"/></svg>'
 });
-const VIEWS=[["overview","Overview"],["debts","Debts"],["plan","Payoff plan"],["budget","Budget"],["fund","Emergency fund"],["activity","Activity"],["settings","Settings"]];
+const VIEWS=[["overview","Overview"],["accounts","Accounts"],["debts","Debts"],["plan","Payoff plan"],["budget","Budget"],["fund","Emergency fund"],["activity","Activity"],["settings","Settings"]];
 const TABS=[["overview","Home"],["debts","Debts"],["budget","Budget"],["fund","Fund"]];
-const TAB_OF={plan:"debts",activity:"overview",settings:"overview",categories:"overview",pay:"budget"};
-const BACK_OF={settings:["overview","Home"],categories:["settings","Settings"],activity:["overview","Home"],pay:["budget","Budget"]};
+const TAB_OF={accounts:"overview",plan:"debts",activity:"overview",settings:"overview",categories:"overview",pay:"budget"};
+const BACK_OF={accounts:["overview","Home"],settings:["overview","Home"],categories:["settings","Settings"],activity:["overview","Home"],pay:["budget","Budget"]};
 let view="overview";
 try{const h=location.hash.slice(1);if(VIEWS.some(v=>v[0]===h)||(h==="categories"||h==="pay"))view=h}catch(e){}
 
@@ -886,6 +894,7 @@ function vOverview(){
     </div>
     </div>
     <div class="grid" style="gap:inherit;align-content:start">
+      <button class="panel nw-card" data-go="accounts"><div class="panel-head" style="margin-bottom:6px"><h2>Net worth</h2><span class="btn ghost small">Accounts ›</span></div><div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap"><span class="mid ${netWorth()<0?"owed":""}">${money(netWorth(),{whole:true})}</span><span class="muted">${(S.accounts||[]).length?`own ${money(assetsTotal(),{whole:true})} · owe ${money(totalOwed(),{whole:true})}`:"Add your bank accounts to see it"}</span></div></button>
       <section class="panel">
         <div class="panel-head"><h2>This month's budget</h2><button class="btn ghost small" data-go="budget">Open ›</button></div>
         <div style="display:flex;align-items:baseline;gap:8px"><span class="mid ${left<0?"owed":""}">${money(left,{whole:true})}</span><span class="muted">${left<0?"over budget":"left to spend"}</span></div>
@@ -1118,7 +1127,7 @@ function vActivity(){
 const CHEV='<svg class="chev" viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 5l5 5-5 5"/></svg>';
 const toggle=(id,on,action,label)=>`<button class="switch" role="switch" aria-checked="${!!on}" aria-label="${esc(label)}" id="${id}" data-action="${action}"><span></span></button>`;
 const P={lock:'<rect x="5" y="9" width="10" height="8" rx="2"/><path d="M7 9V6.5a3 3 0 0 1 6 0V9"/>',eye:'<path d="M2 10s3-5 8-5 8 5 8 5-3 5-8 5-8-5-8-5z"/><circle cx="10" cy="10" r="2.2"/>',phone:'<rect x="6" y="2.5" width="8" height="15" rx="2"/><path d="M9 15h2"/>',shield:'<path d="M10 2.5 16 5v4.5c0 4-2.7 6.5-6 7.5-3.3-1-6-3.5-6-7.5V5z"/>',home:'<path d="M3 9.5 10 4l7 5.5V17H3z"/>',moon:'<path d="M15.5 12.5A6.5 6.5 0 0 1 7.5 4.5a6.5 6.5 0 1 0 8 8z"/>',coin:'<circle cx="10" cy="10" r="7"/><path d="M12.5 7.2c-.5-.8-1.4-1.2-2.4-1.2-1.6 0-2.6 1-2.6 2.4V14h5.2M6.5 10.5h4"/>',text:'<path d="M3 15l3.5-9L10 15M4.4 12h4.2M12 15l2.5-6 2.5 6M12.8 13h3.4"/>',cal:'<rect x="3.5" y="4.5" width="13" height="12" rx="2"/><path d="M3.5 8.5h13M7 3v3M13 3v3"/>',grid:'<rect x="3.5" y="3.5" width="5" height="5" rx="1"/><rect x="11.5" y="3.5" width="5" height="5" rx="1"/><rect x="3.5" y="11.5" width="5" height="5" rx="1"/><rect x="11.5" y="11.5" width="5" height="5" rx="1"/>',trend:'<path d="M3 15l5-5 3 3 6-7"/><path d="M13 6h4v4"/>',plus:'<circle cx="10" cy="10" r="7"/><path d="M10 7v6M7 10h6"/>',list:'<path d="M4 6h12M4 10h12M4 14h8"/>',bell:'<path d="M5.5 14V9a4.5 4.5 0 0 1 9 0v5l1.5 1.5H4z"/><path d="M8.5 17.5h3"/>',tag:'<path d="M3.5 10.5V4h6.5l7 7-6.5 6.5z"/><circle cx="7" cy="7.5" r="1"/>',target:'<circle cx="10" cy="10" r="7"/><circle cx="10" cy="10" r="3.5"/>',up:'<path d="M10 13V3M6 7l4-4 4 4M4 13v3h12v-3"/>',down:'<path d="M10 3v10M6 9l4 4 4-4M4 13v3h12v-3"/>',table:'<rect x="3" y="4" width="14" height="12" rx="1.5"/><path d="M3 8h14M8 8v8"/>',clock:'<circle cx="10" cy="10" r="7"/><path d="M10 6v4l3 2"/>',key:'<circle cx="7" cy="12" r="3"/><path d="M9.2 9.8 16 3M13 6l2 2"/>',face:'<path d="M4 7V5a1 1 0 0 1 1-1h2M13 4h2a1 1 0 0 1 1 1v2M16 13v2a1 1 0 0 1-1 1h-2M7 16H5a1 1 0 0 1-1-1v-2M8 8v1M12 8v1M8.5 12.5c1 .7 2 .7 3 0"/>',help:'<circle cx="10" cy="10" r="7"/><path d="M8 8a2 2 0 1 1 3 1.7c-.7.4-1 .8-1 1.6M10 14h.01"/>',info:'<circle cx="10" cy="10" r="7"/><path d="M10 9v5M10 6.5h.01"/>',chat:'<path d="M4 5h12v8H9l-4 3v-3H4z"/>',trash:'<path d="M4 6h12M8 6V4h4v2M6 6l1 10h6l1-10"/>',imp:'<path d="M4 4h8l4 4v8H4z"/><path d="M10 9v5M7.5 11.5 10 14l2.5-2.5"/>',kbd:'<rect x="2.5" y="5" width="15" height="10" rx="2"/><path d="M5.5 8h.01M8.5 8h.01M11.5 8h.01M14.5 8h.01M6 12h8"/>',globe:'<circle cx="10" cy="10" r="7"/><path d="M3 10h14M10 3c2 2.2 2.8 4.5 2.8 7S12 15 10 17M10 3C8 5.2 7.2 7.5 7.2 10S8 15 10 17"/>',stack:'<rect x="5" y="3" width="10" height="9" rx="1.5"/><path d="M3 7v9h11"/>'};
-const ICON_FOR={"App lock":["lock","#2F6FD0"],"Face ID or Touch ID":["face","#0F8F5E"],"Fingerprint or face unlock":["face","#0F8F5E"],"Lock after":["clock","#6E7F8D"],"Change PIN":["key","#6E7F8D"],"Hide amounts":["eye","#7A3FB8"],"Hide in app switcher":["stack","#5B6B7A"],"Where your data lives":["phone","#0F8F5E"],"Install as an app":["home","#2F6FD0"],"Storage protection":["shield","#178F9E"],"Theme":["moon","#5B5FC7"],"Region":["globe","#178F9E"],"Currency":["coin","#E07A2E"],"Text size":["text","#6E7F8D"],"Monthly income":["down","#0F8F5E"],"Month starts on":["cal","#D9534F"],"Categories":["grid","#E07A2E"],"Payoff method":["trend","#0F8F5E"],"Extra each month":["plus","#0F8F5E"],"Payoff plan":["list","#2F6FD0"],"Overspent categories":["bell","#D9534F"],"Low emergency fund":["bell","#178F9E"],"0% periods ending":["bell","#E07A2E"],"Backup reminder":["bell","#6E7F8D"],"Add due dates to my calendar":["cal","#D9534F"],"Name":["tag","#178F9E"],"Target":["target","#178F9E"],"Monthly top-up":["plus","#178F9E"],"Suggestions and progress":["trend","#178F9E"],"Back up to Files or iCloud":["up","#2F6FD0"],"Backup reminder":["bell","#6E7F8D"],"PIN attempts":["shield","#D9534F"],"Restore from backup":["down","#2F6FD0"],"Import bank statement":["imp","#0F8F5E"],"Export activity as CSV":["table","#0F8F5E"],"Restore points":["clock","#5B5FC7"],"All activity":["list","#6E7F8D"],"Add to home screen":["home","#2F6FD0"],"Keyboard shortcuts":["kbd","#6E7F8D"],"Privacy":["shield","#0F8F5E"],"Pay and tax":["coin","#0F8F5E"],"App tour":["home","#0B7D5A"],"About Clearway":["info","#2F6FD0"],"Report a problem or suggest a feature":["chat","#E07A2E"],"Version":["tag","#6E7F8D"],"Delete everything":["trash","#D9534F"]};
+const ICON_FOR={"App lock":["lock","#2F6FD0"],"Face ID or Touch ID":["face","#0F8F5E"],"Fingerprint or face unlock":["face","#0F8F5E"],"Lock after":["clock","#6E7F8D"],"Change PIN":["key","#6E7F8D"],"Hide amounts":["eye","#7A3FB8"],"Hide in app switcher":["stack","#5B6B7A"],"Where your data lives":["phone","#0F8F5E"],"Install as an app":["home","#2F6FD0"],"Storage protection":["shield","#178F9E"],"Theme":["moon","#5B5FC7"],"Region":["globe","#178F9E"],"Currency":["coin","#E07A2E"],"Text size":["text","#6E7F8D"],"Monthly income":["down","#0F8F5E"],"Month starts on":["cal","#D9534F"],"Categories":["grid","#E07A2E"],"Payoff method":["trend","#0F8F5E"],"Extra each month":["plus","#0F8F5E"],"Payoff plan":["list","#2F6FD0"],"Overspent categories":["bell","#D9534F"],"Low emergency fund":["bell","#178F9E"],"0% periods ending":["bell","#E07A2E"],"Backup reminder":["bell","#6E7F8D"],"Add due dates to my calendar":["cal","#D9534F"],"Name":["tag","#178F9E"],"Target":["target","#178F9E"],"Monthly top-up":["plus","#178F9E"],"Suggestions and progress":["trend","#178F9E"],"Back up to Files or iCloud":["up","#2F6FD0"],"Backup reminder":["bell","#6E7F8D"],"PIN attempts":["shield","#D9534F"],"Restore from backup":["down","#2F6FD0"],"Import bank statement":["imp","#0F8F5E"],"Export activity as CSV":["table","#0F8F5E"],"Restore points":["clock","#5B5FC7"],"All activity":["list","#6E7F8D"],"Add to home screen":["home","#2F6FD0"],"Keyboard shortcuts":["kbd","#6E7F8D"],"Privacy":["shield","#0F8F5E"],"Pay and tax":["coin","#0F8F5E"],"Accounts":["home","#2F6FD0"],"App tour":["home","#0B7D5A"],"About Clearway":["info","#2F6FD0"],"Report a problem or suggest a feature":["chat","#E07A2E"],"Version":["tag","#6E7F8D"],"Delete everything":["trash","#D9534F"]};
 const ico=label=>{const k=ICON_FOR[label]||(String(label).endsWith("?")?["help","#6E7F8D"]:null);return k?`<span class="gico" style="background:${k[1]}"><svg viewBox="0 0 20 20" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${P[k[0]]}</svg></span>`:""};
 const gi=(label,sub,right,attrs="")=>`<div class="gi" ${attrs}>${ico(label)}<div class="gl"><div>${label}</div>${sub?`<div class="gsub">${sub}</div>`:""}</div>${right||""}</div>`;
 const giLink=(label,sub,value,attrs)=>`<button class="gi gi-btn" ${attrs}>${ico(label)}<div class="gl"><div>${label}</div>${sub?`<div class="gsub">${sub}</div>`:""}</div>${value?`<span class="gv">${value}</span>`:""}${CHEV}</button>`;
@@ -1158,6 +1167,7 @@ function vSettings(){
   ${gsec("Budget",[
     gi("Monthly income","Used for this and future months",`<div class="money-in gmoney"><span>${esc(curSymbol())}</span><input id="set-income" inputmode="decimal" value="${(+m.income||0).toLocaleString()}" data-action="set-income" aria-label="Monthly income"></div>`),
     gi("Month starts on","Set it to your payday",`<select class="gselect" id="set-start" data-action="month-start" aria-label="Budget month starts on">${Array.from({length:28},(_,i)=>i+1).map(d=>`<option value="${d}" ${startDay()===d?"selected":""}>${d===1?"1st of the month":ordinal(d)}</option>`).join("")}</select>`),
+    giLink("Accounts",(S.accounts||[]).length?`${S.accounts.length} account${S.accounts.length>1?"s":""} · net worth ${money(netWorth(),{whole:true})}`:"Add bank accounts and see your net worth","",'data-go="accounts"'),
     giLink("Pay and tax",S.pay&&S.pay.salary?`${money(Math.round(calcPay(S.pay).net/12),{whole:true})} a month take-home`:"Salary, take-home pay and tax","",'data-go="pay"'),
     giLink("Categories",`${S.budget.groups.length} groups · ${nCats} categories`,"",'data-go="categories"'),
   ])}
@@ -1548,6 +1558,85 @@ document.addEventListener("click",e=>{
   if(e.target.closest("[data-action=pay-sync]")){savePay({sync:pay().sync===false});toast(pay().sync!==false?"Budget income will follow your take-home pay.":"Budget income won't change automatically.")}
 });
 
+
+/* ---------- accounts and net worth ---------- */
+const ACC_TYPES=[["current","Current account","🏦"],["savings","Savings","💰"],["isa","ISA","🌱"],["cash","Cash","💵"],["invest","Investments","📈"],["pension","Pension","🏖️"],["other","Other","🏷️"]];
+const accType=t=>ACC_TYPES.find(x=>x[0]===t)||ACC_TYPES[6];
+const accountsTotal=()=>sum(S.accounts||[],a=>+a.balance||0);
+const assetsTotal=()=>accountsTotal()+Math.max(0,fundBalance());
+const netWorth=()=>round2(assetsTotal()-totalOwed());
+function nwSeries(){
+  // months back from the earliest account history or debt, rebuilt from account histories, fund entries and debt payments
+  const n=nowIdx();const starts=[...(S.accounts||[]).flatMap(a=>(a.history||[]).map(h=>mIndex(h.date.slice(0,7)))),...S.debts.map(d=>{const t=new Date(d.createdTs||Date.now());return t.getFullYear()*12+t.getMonth()})];
+  const s0=Math.max(n-11,starts.length?Math.min(...starts):n);const pts=[];
+  for(let i=s0;i<=n;i++){
+    const end=i===n?Date.now():new Date(Math.floor((i+1)/12),(i+1)%12,1).getTime()-1;
+    const acc=sum(S.accounts||[],a=>{if(i===n)return +a.balance||0;const h=(a.history||[]).filter(x=>mIndex(x.date.slice(0,7))<=i).pop();return h?h.balance:0});
+    const fund=sum(S.fund.entries.filter(e=>e.ts<=end),e=>e.amount);
+    const owed=i===n?totalOwed():sum(S.debts.filter(d=>(d.createdTs||0)<=end),d=>Math.max(0,d.original-sum(debtPayments(d).filter(p=>p.ts<=end),p=>p.amount)));
+    pts.push({x:i,y:round2(acc+fund-owed)});
+  }
+  return pts;
+}
+function vAccounts(){
+  const accs=S.accounts||[];const nw=netWorth(),assets=assetsTotal(),owed=totalOwed();
+  const series=nwSeries();const prev=series.length>1?series[series.length-2].y:null;const chg=prev==null?null:round2(nw-prev);
+  const groups=[["Cash and savings",["current","savings","isa","cash"]],["Investments and pensions",["invest","pension"]],["Other",["other"]]];
+  const since=ts=>{const d=Math.floor((Date.now()-(ts||0))/864e5);return d<=0?"today":d===1?"yesterday":d<30?d+" days ago":"over a month ago"};
+  const row=a=>{const t=accType(a.type);return `<button class="gi gi-btn acc-row" data-action="edit-account" data-id="${a.id}"><span class="cat-emo" aria-hidden="true">${t[2]}</span><span class="gl"><span>${esc(a.name)}</span><span class="gsub">${t[1]} · updated ${since(a.updatedTs)}</span></span><span class="acc-bal">${money(+a.balance||0)}</span>${CHEV}</button>`};
+  const rawMin=Math.min(0,...series.map(p=>p.y)),rawMax=Math.max(0,...series.map(p=>p.y));const step=niceMax(Math.max(1,rawMax-rawMin))/4;const ymin=rawMin<0?Math.floor(rawMin/step)*step:0;
+  return `${topbar("Accounts","Your balances in one place. Update them whenever you check your banking app.",`<button class="btn primary desk-only" data-action="add-account">Add account</button>`)}
+  <div class="grid g-hero">
+    <section class="panel hero">
+      <div class="label">Net worth</div>
+      <div class="big" style="margin-top:4px">${money(nw,{whole:true})}</div>
+      <div class="hero-sub">${chg==null?"What you own minus what you owe":(chg>=0?"Up ":"Down ")+money(Math.abs(chg),{whole:true})+" since last month"}</div>
+      <div class="hero-legend" style="margin-top:16px"><span>Own <strong>${money(assets,{whole:true})}</strong></span><span>Owe <strong>${money(owed,{whole:true})}</strong></span></div>
+      <div class="paybar" aria-hidden="true"><span style="width:${(assets/Math.max(1,assets+owed)*100).toFixed(1)}%;background:var(--gold)"></span><span style="width:${(owed/Math.max(1,assets+owed)*100).toFixed(1)}%;background:rgba(255,255,255,.35)"></span></div>
+    </section>
+    <section class="panel"><div class="panel-head"><h2>Net worth over time</h2></div>
+      ${series.length>1?lineChart([{points:series.map(p=>({x:p.x,y:p.y-ymin})),color:"var(--accent)",fill:true,end:true}],{h:200,w:420,yFmt:v=>money(v+ymin,{whole:true})}):`<div class="empty"><p>Your trend builds up as you update balances each month.</p></div>`}
+      ${ymin<0?`<div class="muted" style="margin-top:6px">Below zero means you owe more than you own. Every payment moves the line up.</div>`:""}</section>
+  </div>
+  <div class="settings" style="max-width:none">
+  ${accs.length?groups.map(([title,types])=>{const list=accs.filter(a=>types.includes(a.type));return list.length?`<section class="gsec"><div class="cat-gh"><div class="cat-gt"><h2>${title}</h2></div><span class="cat-gsum">${money(sum(list,a=>+a.balance||0),{whole:true})}</span></div><div class="glist">${list.map(row).join("")}</div></section>`:""}).join(""):`<section class="panel empty"><h2>Add your first account</h2><p>Add your current account and any savings to see your net worth. Clearway never connects to your bank, so you type the balance in.</p><button class="btn primary" data-action="add-account">Add an account</button></section>`}
+  <section class="gsec"><div class="cat-gh"><div class="cat-gt"><h2>Emergency fund</h2></div><span class="cat-gsum">${money(fundBalance(),{whole:true})}</span></div><div class="glist"><button class="gi gi-btn acc-row" data-go="fund"><span class="cat-emo" aria-hidden="true">🛟</span><span class="gl"><span>${esc(S.fund.name)}</span><span class="gsub">Tracked from your deposits</span></span><span class="acc-bal">${money(fundBalance())}</span>${CHEV}</button></div></section>
+  ${S.debts.length?`<section class="gsec"><div class="cat-gh"><div class="cat-gt"><h2>Debts</h2></div><span class="cat-gsum owed">−${money(owed,{whole:true})}</span></div><div class="glist">${S.debts.filter(d=>balance(d)>0.005).map(d=>`<button class="gi gi-btn acc-row" data-go="debts"><span class="cat-emo" aria-hidden="true">💳</span><span class="gl"><span>${esc(d.name)}</span><span class="gsub">${esc(d.kind||"Debt")} · tracked from your payments</span></span><span class="acc-bal owed">−${money(balance(d))}</span>${CHEV}</button>`).join("")}</div></section>`:""}
+  ${accs.length?`<button class="btn" data-action="add-account" style="align-self:flex-start">+ Add account</button>`:""}
+  </div>`;
+}
+function openAccountSheet(id){
+  const a=id?(S.accounts||[]).find(x=>x.id===id):null;
+  openModal(`<h2>${a?esc(a.name):"Add an account"}</h2>
+    <div class="field"><label for="ac-bal">${a?"Balance today":"Current balance"}</label><div class="money-in huge"><span>${esc(curSymbol())}</span><input id="ac-bal" inputmode="decimal" value="${a?(+a.balance||0):""}" placeholder="0.00" autocomplete="off"></div>${a?`<div class="muted">Was ${money(+a.balance||0)}. Saving records today's balance for your trend.</div>`:""}</div>
+    <div class="form-grid">
+      <div class="field"><label for="ac-name">Name</label><input id="ac-name" value="${esc(a?.name||"")}" placeholder="e.g. Monzo, Nationwide ISA" autocomplete="off"></div>
+      <div class="field"><label for="ac-type">Type</label><select id="ac-type">${ACC_TYPES.map(([k,l,e])=>`<option value="${k}" ${(a?.type||"current")===k?"selected":""}>${e} ${l}</option>`).join("")}</select></div>
+    </div>
+    <div class="muted" id="ac-err" aria-live="polite">Credit cards and loans go in Debts, so they're counted once.</div>
+    <div id="ac-del-zone"></div>
+    <div class="modal-actions">${a?'<button class="btn ghost danger" id="ac-del" style="margin-right:auto">Delete</button>':""}<button class="btn ghost" data-close>Cancel</button><button class="btn primary" id="ac-save">${a?"Save":"Add account"}</button></div>`,m=>{
+    const bal=$("#ac-bal");bal.focus();bal.select();
+    const save=()=>{const v=parseMoney(bal.value);const name=$("#ac-name").value.trim();
+      if(!isFinite(v)){$("#ac-err").innerHTML='<span class="owed">Enter the balance, for example 1250. Use a minus sign if it\'s overdrawn.</span>';bal.focus();return}
+      if(!name){$("#ac-err").innerHTML='<span class="owed">Give the account a name.</span>';$("#ac-name").focus();return}
+      if(isExample)leaveExampleSilently();S.accounts=S.accounts||[];
+      const today=todayStr();let acc=a;if(!acc){acc={id:uid(),history:[]};S.accounts.push(acc)}
+      acc.name=name;acc.type=$("#ac-type").value;acc.balance=v;acc.updatedTs=Date.now();
+      acc.history=(acc.history||[]).filter(h=>h.date.slice(0,7)!==today.slice(0,7));acc.history.push({date:today,balance:v});
+      modalClose();commit();toast((a?"Updated ":"Added ")+name+". Net worth "+money(netWorth(),{whole:true})+".")};
+    $("#ac-save").onclick=save;m.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.tagName==="INPUT"){e.preventDefault();save()}});
+    if(a)$("#ac-del").onclick=()=>{$("#ac-del-zone").innerHTML=`<div class="note" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><strong style="flex:1">Delete ${esc(a.name)}?</strong><button class="btn danger small" id="ac-del-yes">Delete</button><button class="btn ghost small" id="ac-del-no">Keep</button></div>`;
+      $("#ac-del-no").onclick=()=>{$("#ac-del-zone").innerHTML=""};
+      $("#ac-del-yes").onclick=()=>{const snap=JSON.stringify(S.accounts);S.accounts=S.accounts.filter(x=>x.id!==a.id);if(isExample)leaveExampleSilently();modalClose();commit();toast("Deleted "+a.name+".",()=>{S.accounts=JSON.parse(snap);commit()})}};
+  });
+}
+function openBalancePicker(){
+  const accs=S.accounts||[];if(!accs.length){openAccountSheet();return}
+  openModal(`<h2>Update a balance</h2><div class="glist" style="border:1px solid var(--line)">${accs.map(a=>`<button class="gi gi-btn acc-row" data-pick-acc="${a.id}"><span class="cat-emo" aria-hidden="true">${accType(a.type)[2]}</span><span class="gl"><span>${esc(a.name)}</span></span><span class="acc-bal">${money(+a.balance||0)}</span>${CHEV}</button>`).join("")}<button class="gi gi-btn gi-add" data-pick-acc="">+ Add an account</button></div>`,m=>{
+    m.addEventListener("click",e=>{const b=e.target.closest("[data-pick-acc]");if(!b)return;const id=b.dataset.pickAcc;modalClose();openAccountSheet(id||null)})});
+}
+
 /* ---------- app lock (privacy screen, not encryption) ---------- */
 const LOCK_KEY="clearway-lock";
 function lockInfo(){try{return JSON.parse(localStorage.getItem(LOCK_KEY)||"null")}catch(e){return null}}
@@ -1625,10 +1714,10 @@ function render(){
   $("#nav").innerHTML=navHtml;
   const tb=TABS.map(([k,l])=>`<button data-go="${k}" ${(TAB_OF[view]||view)===k?'aria-current="page"':""}>${I[k]}${l}</button>`);if(!BACK_OF[view]||view==="activity")tb.splice(2,0,`<button class="tab-add" data-action="quick-add" aria-label="Add: log a payment, spending or savings"><span>+</span></button>`);$("#tabs").innerHTML=tb.join("");
   applyPrefs();document.body.classList.toggle("pushed",!!BACK_OF[view]);
-  const f={overview:vOverview,debts:vDebts,plan:vPlan,budget:vBudget,fund:vFund,activity:vActivity,settings:vSettings,categories:vCategories,pay:vPay}[view];
+  const f={overview:vOverview,debts:vDebts,plan:vPlan,budget:vBudget,fund:vFund,activity:vActivity,settings:vSettings,categories:vCategories,pay:vPay,accounts:vAccounts}[view];
   const sx=window.scrollY;
   $("#view").innerHTML=f();
-  {const bk=BACK_OF[view];if(bk){const t=VIEWS.find(x=>x[0]===view)?.[1]||({categories:"Categories",pay:"Pay & tax"})[view]||"";$("#view").insertAdjacentHTML("afterbegin",`<div class="navbar mobile-only"><button class="nb-back" data-go="${bk[0]}"><svg viewBox="0 0 12 20" width="11" height="18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2L2 10l8 8"/></svg>${bk[1]}</button><span class="nb-title">${t}</span>${view==="categories"?`<button class="nb-act" data-action="add-group" aria-label="Add group">+</button>`:"<span></span>"}</div>`)}}
+  {const bk=BACK_OF[view];if(bk){const t=VIEWS.find(x=>x[0]===view)?.[1]||({categories:"Categories",pay:"Pay & tax"})[view]||"";$("#view").insertAdjacentHTML("afterbegin",`<div class="navbar mobile-only"><button class="nb-back" data-go="${bk[0]}"><svg viewBox="0 0 12 20" width="11" height="18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2L2 10l8 8"/></svg>${bk[1]}</button><span class="nb-title">${t}</span>${view==="categories"?`<button class="nb-act" data-action="add-group" aria-label="Add group">+</button>`:view==="accounts"?`<button class="nb-act" data-action="add-account" aria-label="Add account">+</button>`:"<span></span>"}</div>`)}}
   {const v=$("#view"),tb=v.querySelector(".topbar"),sn=v.querySelector(".subnav"),ex=v.querySelector(".note.example"),ck=view==="debts"?v.querySelector(".checks"):null;if(tb&&sn)tb.after(sn);if(ck&&(sn||tb))(sn||tb).after(ck);if(tb&&ex&&view!=="overview")(sn||tb).after(ex)}
   window.scrollTo(0,sx);
   const ce=$("#cell-edit");if(ce){ce.focus();ce.select()}
@@ -1698,8 +1787,8 @@ function leaveExampleSilently(){isExample=false}
 function openQuickAdd(){
   const it=(act,icon,title,sub,col)=>`<button class="qa${act==="pay"?" qa-primary":""}" data-qa="${act}"><span class="qa-ic" style="--c:${col}">${icon}</span><span class="gl"><strong>${title}</strong><span class="gsub">${sub}</span></span>${CHEV}</button>`;
   const n=suggestedNext();
-  openModal(`<h2>What would you like to add?</h2><div class="qa-list">${it("pay",I.debts,"Log a debt payment",n&&n.amount>0?`Next up: ${money(n.amount)} to ${esc(n.debt.name)}`:"Pay off a card, loan or overdraft","var(--paid)")}${it("spend",I.budget,"Add spending","Groceries, bills, eating out","var(--accent)")}${it("fund",I.fund,"Add to "+esc(S.fund.name),money(fundBalance(),{whole:true})+" saved so far","var(--fund)")}${it("debt",'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 4v12M4 10h12"/></svg>',"Add a debt","New card, loan or 0% balance transfer","var(--ink-2)")}</div>`,m=>{
-    m.addEventListener("click",e=>{const b=e.target.closest("[data-qa]");if(!b)return;const a=b.dataset.qa;modalClose();if(a==="pay")openPayModal();else if(a==="spend")openTxnModal();else if(a==="fund")openFundModal(false);else openDebtModal()})});
+  openModal(`<h2>What would you like to add?</h2><div class="qa-list">${it("pay",I.debts,"Log a debt payment",n&&n.amount>0?`Next up: ${money(n.amount)} to ${esc(n.debt.name)}`:"Pay off a card, loan or overdraft","var(--paid)")}${it("spend",I.budget,"Add spending","Groceries, bills, eating out","var(--accent)")}${it("bal",I.accounts,"Update a balance",(S.accounts||[]).length?"Net worth "+money(netWorth(),{whole:true}):"Add your current account or savings","#2F6FD0")}${it("fund",I.fund,"Add to "+esc(S.fund.name),money(fundBalance(),{whole:true})+" saved so far","var(--fund)")}${it("debt",'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 4v12M4 10h12"/></svg>',"Add a debt","New card, loan or 0% balance transfer","var(--ink-2)")}</div>`,m=>{
+    m.addEventListener("click",e=>{const b=e.target.closest("[data-qa]");if(!b)return;const a=b.dataset.qa;modalClose();if(a==="pay")openPayModal();else if(a==="spend")openTxnModal();else if(a==="fund")openFundModal(false);else if(a==="bal")openBalancePicker();else openDebtModal()})});
 }
 function openDebtModal(id){
   const d=id?S.debts.find(x=>x.id===id):null;const b=d?balance(d):"";
@@ -1813,6 +1902,8 @@ document.addEventListener("click",e=>{
       if(used&&b.dataset.confirm!=="1"){b.dataset.confirm="1";b.classList.add("danger-armed");b.innerHTML="Delete?";toast(c.name+" has "+used+" purchase"+(used>1?"s":"")+". Tap Delete? again to remove it and them.");break}
       const snap=JSON.stringify({groups:S.budget.groups,txns:S.txns});g.cats=g.cats.filter(x=>x.id!==id);S.txns=S.txns.filter(t=>t.catId!==id);if(isExample)leaveExampleSilently();commit();toast("Deleted "+c.name+".",()=>{const o=JSON.parse(snap);S.budget.groups=o.groups;S.txns=o.txns;commit()});break}
     case "add-cat-in":openCatSheet(null,b.dataset.id);break;
+    case "add-account":openAccountSheet(null);break;
+    case "edit-account":openAccountSheet(b.dataset.id);break;
     case "edit-cat":openCatSheet(b.dataset.id);break;
     case "edit-group":openGroupSheet(b.dataset.id);break;
     case "add-group":openGroupSheet(null);break;
