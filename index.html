@@ -1033,7 +1033,7 @@ function vDebts(){
 }
 function promoNote(d,compact){
   const pi=promoInfo(d);if(!pi||balance(d)<=0.005)return "";
-  const when=mLabel(pi.end,true),after=fmtRate(d.apr);
+  const when=mLabel(pi.end,true),after=`${fmtRate(d.apr)}${+d.apr>0?`, about ${money(pi.left*d.apr/1200,{whole:true})} a month in interest`:""}`;
   if(pi.left<=0.5)return `<div class="promo-note good" style="grid-column:1/-1"><strong class="paid">On track:</strong> your plan clears ${esc(d.name)} before the ${fmtRate(d.promoApr)} period ends in ${when}.</div>`;
   return `<div class="promo-note bad" style="grid-column:1/-1"><div><strong class="owed">${money(pi.left,{whole:true})} will still be owed${compact?` on ${esc(d.name)}`:""} when ${fmtRate(d.promoApr)} ends in ${when}</strong>, and it will start costing ${after}. Pay about <strong>${money(pi.need,{whole:true})} a month</strong> to clear it in time${pi.monthsLeft>0?` (${pi.monthsLeft} payment${pi.monthsLeft>1?"s":""} left)`:""}, or move it to another 0% card before then.</div>${compact?"":`<button class="btn small" data-action="promo-prioritise" data-id="${d.id}">Pay it first in my plan</button>`}</div>`;
 }
@@ -1917,11 +1917,26 @@ function openDebtModal(id){
       <label class="full" style="display:flex;gap:10px;align-items:center;font-weight:600;cursor:pointer"><input type="checkbox" id="d-promo" ${d?.promoEnd?"checked":""} style="width:20px;height:20px;accent-color:var(--accent)"> It has a 0% or low-rate period</label>
       <div class="field" data-promo ${d?.promoEnd?"":"hidden"}><label for="d-papr">Promo rate (%)</label><input id="d-papr" inputmode="decimal" value="${d?.promoApr??0}"></div>
       <div class="field" data-promo ${d?.promoEnd?"":"hidden"}><label for="d-pend">Promo ends (last month)</label><input id="d-pend" type="month" value="${d?.promoEnd||""}" min="${monthKey()}"></div>
+      <div class="promo-note full" id="d-pprev" data-promo aria-live="polite" ${d?.promoEnd?"":"hidden"}></div>
     </div>
     <div class="muted" id="d-err" aria-live="polite">${d?"Changing the balance resets it from today. Use this when a statement shows interest or charges were added.":"Only the name and balance are required. Add the rate and minimum for an accurate plan."}</div>
     <div class="modal-actions">${d?`<button class="btn danger ghost" id="d-del" style="margin-right:auto">Delete</button>`:""}<button class="btn ghost" data-close>Cancel</button><button class="btn primary" id="d-save">${d?"Save changes":"Add debt"}</button></div>`,m=>{
     $("#d-name").focus();
-    $("#d-promo").addEventListener("change",e=>{m.querySelectorAll("[data-promo]").forEach(x=>x.hidden=!e.target.checked);if(e.target.checked)$("#d-pend").focus()});
+    $("#d-promo").addEventListener("change",e=>{m.querySelectorAll("[data-promo]").forEach(x=>x.hidden=!e.target.checked);promoPreview();if(e.target.checked)$("#d-pend").focus()});
+    // what happens when the promo ends, from the numbers typed so far
+    const promoPreview=()=>{
+      const el=$("#d-pprev");if(!el||!$("#d-promo").checked)return;
+      const bal=parseMoney($("#d-bal").value||0),apr=parseMoney($("#d-apr").value||0),min=parseMoney($("#d-min").value||0),papr=parseMoney($("#d-papr").value||0),pend=$("#d-pend").value;
+      if(!(bal>0)||!pend){el.className="promo-note full";el.innerHTML="Enter the balance and the month the promo ends to see what it will cost afterwards.";return}
+      const n=Math.max(0,mIndex(pend)-nowIdx()),r=papr/1200;
+      let left=bal;for(let i=0;i<n;i++)left=Math.max(0,left*(1+r)-min);
+      const need=n<=0?bal:(r>0?bal*r/(1-Math.pow(1+r,-n)):bal/n),when=mLabel(mIndex(pend),true);
+      const perMonth=left*apr/1200;
+      if(left<=0.5){el.className="promo-note full good";el.innerHTML=`<span><strong class="paid">Paid off in time.</strong> Paying the ${money(min,{whole:true})} minimum clears it before ${fmtRate(papr)} ends in ${when}.</span>`;return}
+      el.className="promo-note full bad";
+      el.innerHTML=`<span>${min>0?`Paying the ${money(min,{whole:true})} minimum`:"With no minimum entered"}, about <strong class="owed">${money(left,{whole:true})}</strong> will still be owed when ${fmtRate(papr)} ends in ${when}. ${apr>0?`At ${fmtRate(apr)} that costs about <strong class="owed">${money(perMonth,{whole:true})} a month</strong> in interest (${money(perMonth*12,{whole:true})} a year).`:"Add the interest rate to see what it costs after that."} Pay <strong>${money(need,{whole:true})} a month</strong> to clear it in time.</span>`;
+    };
+    ["#d-bal","#d-apr","#d-min","#d-papr","#d-pend"].forEach(q=>$(q).addEventListener("input",promoPreview));promoPreview();
     const save=()=>{const name=$("#d-name").value.trim(),bal=parseMoney($("#d-bal").value),apr=parseMoney($("#d-apr").value||0),min=parseMoney($("#d-min").value||0),due=parseInt($("#d-due").value)||null;
       const hasPromo=$("#d-promo").checked,pend=$("#d-pend").value,papr=parseMoney($("#d-papr").value||0);
       if(!name){$("#d-err").innerHTML='<span class="owed">Give the debt a name so you can recognise it.</span>';$("#d-name").focus();return}
