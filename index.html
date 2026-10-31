@@ -167,6 +167,7 @@ body.sheet-open{position:fixed;left:0;right:0;overflow:hidden}
 .rta.good{background:var(--paid-soft)} .rta.bad{background:var(--owed-soft)} .rta.zero{background:var(--surface-2)}
 .fab{display:none}
 .mobile-only{display:none}
+.topbar.has-gear{position:relative}.topbar.has-gear>div:first-of-type{padding-right:52px}.topbar .topgear{position:absolute;top:0;right:0;margin:0}
 @media (max-width:760px){.mobile-only{display:inline-flex}.desk-only{display:none!important}.settings{max-width:none}.gi{padding:10px 14px;flex-wrap:wrap}.gi .gl{min-width:150px}.gi>.seg{margin-left:auto}}
 html{-webkit-text-size-adjust:100%;touch-action:manipulation}
 .settings{display:flex;flex-direction:column;gap:22px;max-width:720px}
@@ -934,7 +935,9 @@ function exampleBanner(){
 function subnav(){return `<div class="seg subnav mobile-only" role="tablist" aria-label="Debts section"><button role="tab" aria-pressed="${view==="debts"}" data-go="debts">My debts</button><button role="tab" aria-pressed="${view==="plan"}" data-go="plan">Payoff plan</button></div>`}
 const headIcons=()=>`<button class="iconbtn round" data-action="toggle-hide" aria-label="${S.hide?"Show amounts":"Hide amounts"}" title="${S.hide?"Show amounts":"Hide amounts"}">${S.hide?I.eyeoff:I.eye}</button><button class="iconbtn round mobile-only" data-go="settings" aria-label="Settings">${I.settings}</button>`;
 function topbar(title,sub,actions=""){
-  return `<div class="topbar"><div><h1>${esc(title)}</h1>${sub?`<div class="sub">${sub}</div>`:""}</div><div class="actions" style="display:flex;gap:8px;flex-wrap:wrap">${actions}</div></div>`;
+  // every main tab gets the settings gear on phones; inner screens have a back button instead
+  const gear=!BACK_OF[view]&&!actions.includes('data-go="settings"')?'<button class="iconbtn round mobile-only topgear" data-go="settings" aria-label="Settings">'+I.settings+'</button>':"";
+  return `<div class="topbar${gear?" has-gear":""}">${gear}<div><h1>${esc(title)}</h1>${sub?`<div class="sub">${sub}</div>`:""}</div>${actions?`<div class="actions" style="display:flex;gap:8px;flex-wrap:wrap">${actions}</div>`:""}</div>`;
 }
 function homeAlerts(){
   const al=S.alerts||{};const out=[];const k=monthKey();
