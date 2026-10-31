@@ -269,6 +269,19 @@ body.text-large main,body.text-large .modal{zoom:1.1}body.text-xl main,body.text
 a.gi{text-decoration:none;color:inherit}
 select.gselect{appearance:none;-webkit-appearance:none;border:0!important;background:transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%2371877E' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 8l3-3 3 3M7 12l3 3 3-3'/%3E%3C/svg%3E") no-repeat right 0 center/15px!important;padding:8px 20px 8px 6px!important;max-width:62%;color:var(--ink-3)!important;font-weight:400;text-align:right;text-align-last:right;font-size:15px}
 .qa-list{display:flex;flex-direction:column;gap:8px}
+.cat-gh{display:flex;align-items:center;gap:10px;padding:0 4px 0 16px}
+.cat-gt{flex:1;display:flex;align-items:center;gap:8px;min-width:0}.cat-gt h2{font-size:17px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cat-gsum{color:var(--ink-3);font-size:13.5px;white-space:nowrap}
+.cat-gh .iconbtn{font-size:20px;letter-spacing:1px}
+.cat-row{all:unset;cursor:pointer;flex:1;display:flex;align-items:center;gap:12px;min-width:0;padding:2px 0}
+.cat-row:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:8px}
+.cat-row .gl{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px;font-weight:500}
+.cat-emo{width:34px;height:34px;border-radius:10px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-size:18px;flex:none}
+.cats .swipe-row{gap:8px}
+.emo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(42px,1fr));gap:6px}
+.emo{all:unset;cursor:pointer;height:42px;border-radius:12px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-size:20px;border:2px solid transparent}
+.emo[aria-checked="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.emo:focus-visible{outline:2px solid var(--accent)}
 .tour{position:fixed;inset:0;z-index:95;background:var(--bg);display:flex;flex-direction:column;padding:calc(10px + env(safe-area-inset-top,0px)) max(18px,env(safe-area-inset-right,0px)) calc(14px + env(safe-area-inset-bottom,0px)) max(18px,env(safe-area-inset-left,0px));touch-action:pan-y}
 .tour-top{display:flex;justify-content:space-between;align-items:center}
 .tour-count{color:var(--ink-3);font-size:13px;font-weight:500}
@@ -983,7 +996,7 @@ function vBudget(){
   const now=new Date();const [py,pm]=monthKey().split("-").map(Number);const pend=new Date(py,pm,startDay()-1);const daysLeft=Math.max(1,Math.round((new Date(pend.getFullYear(),pend.getMonth(),pend.getDate())-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/864e5)+1);
   const avPill=(av)=>av<-0.005?`<span class="pill bad">${money(av)}</span>`:av<0.005?`<span class="pill neutral">${money(0)}</span>`:`<span class="pill good">${money(av)}</span>`;
   const catRow=c=>{const as=m.assigned[c.id]||0,sp=spent(c.id,k),carry=carryFor(c.id,k),av=availableFor(c.id,k);const tot=as+carry;const pct=tot>0?Math.min(1,sp/tot):sp>0?1:0;const isOver=av<-0.005;
-    return `<tr class="${isOver?"over":""}"><td><div style="display:flex;flex-direction:column;gap:5px;min-width:150px"><span>${esc(c.name)}${isOver?` <strong class="owed" style="font-size:12.5px">· overspent</strong>`:""}</span><div class="bar thin" style="max-width:220px"><span style="width:${(pct*100).toFixed(0)}%;background:${isOver?"var(--owed)":"var(--accent)"}"></span></div></div></td>
+    return `<tr class="${isOver?"over":""}"><td><div style="display:flex;flex-direction:column;gap:5px;min-width:150px"><span><span aria-hidden="true">${catEmoji(c)}</span> ${esc(c.name)}${isOver?` <strong class="owed" style="font-size:12.5px">· overspent</strong>`:""}</span><div class="bar thin" style="max-width:220px"><span style="width:${(pct*100).toFixed(0)}%;background:${isOver?"var(--owed)":"var(--accent)"}"></span></div></div></td>
     <td>${cellEdit("assign",c.id,as)}${carry>0.005?`<div class="muted" style="font-size:12px">+${money(carry)} rolled over</div>`:""}</td><td>${sp?`<button class="cellbtn" data-action="add-txn" data-cat="${c.id}">${money(sp)}</button>`:`<button class="cellbtn muted" data-action="add-txn" data-cat="${c.id}">+ Spend</button>`}</td><td>${avPill(av)}</td></tr>`};
   const groupRow=(name,as,sp,av,extra="")=>`<tr class="group"><td>${name}${extra}</td><td>${money(as)}</td><td>${money(sp)}</td><td>${av==null?"":money(av)}</td></tr>`;
   const debtRows=S.debts.filter(d=>balance(d)>0.005||debtRowFor(d,k).paid>0).map(d=>{const r=debtRowFor(d,k);const left=round2(r.planned-r.paid);
@@ -1186,16 +1199,76 @@ function vSettings(){
   ${gsec("Start over",[`<div class="gi" id="reset-zone">${ico("Delete everything")}<div class="gl"><div class="owed" style="font-weight:600">Delete everything</div><div class="gsub">Every debt, payment, budget and fund entry. This can't be undone.</div></div><button class="btn small danger" data-action="reset-ask">Delete</button></div>`])}
   </div>`;
 }
+const EMOJI_RULES=[[/rent|mortgage|home|house/i,"🏠"],[/energy|electric|gas|util/i,"⚡"],[/water/i,"💧"],[/phone|mobile|internet|broadband|wifi/i,"📱"],[/insur/i,"🛡️"],[/groc|food shop|supermarket/i,"🛒"],[/transport|travel|train|bus|commut/i,"🚌"],[/car|fuel|petrol|parking/i,"🚗"],[/eat|restaurant|takeaway|coffee/i,"🍽️"],[/subscri|stream|netflix/i,"📺"],[/fun|entertain|hobb/i,"🎉"],[/child|kid|school|nursery/i,"🧸"],[/pet|dog|cat\b|vet/i,"🐾"],[/gift|present|christmas|birthday/i,"🎁"],[/health|medic|pharm|dentist|gym/i,"💊"],[/cloth|shoe/i,"👕"],[/holiday|trip/i,"✈️"],[/council|tax/i,"🏛️"],[/saving/i,"💰"],[/charit|donat/i,"💚"]];
+const EMOJI_SET=["🏠","⚡","💧","📱","🛡️","🛒","🚌","🚗","🍽️","☕","📺","🎉","🧸","🐾","🎁","💊","👕","✈️","🏛️","💰","📚","🏷️"];
+const catEmoji=c=>c.emoji||(EMOJI_RULES.find(([re])=>re.test(c.name))||[0,"🏷️"])[1];
+const catSpent=id=>spent(id,monthKey());
 function vCategories(){
   const m=ensureMonth(monthKey());
   const grip='<svg viewBox="0 0 20 20" width="18" height="18" fill="currentColor" aria-hidden="true"><circle cx="7" cy="5" r="1.5"/><circle cx="13" cy="5" r="1.5"/><circle cx="7" cy="10" r="1.5"/><circle cx="13" cy="10" r="1.5"/><circle cx="7" cy="15" r="1.5"/><circle cx="13" cy="15" r="1.5"/></svg>';
-  return `<div class="topbar"><div><button class="btn ghost small backbtn desk-only" data-go="settings">‹ Settings</button><h1>Categories</h1><div class="sub">Drag ⋮⋮ to reorder. Swipe a category left to delete it.</div></div><div class="actions desk-only"><button class="btn primary" data-action="add-group">Add group</button></div></div>
-  <div class="settings">
-  ${S.budget.groups.map(g=>`<section class="gsec"><div class="gh-row"><input class="gh-input" value="${esc(g.name)}" data-action="rename-group" data-id="${g.id}" aria-label="Group name"><label class="gtiny">Essential ${toggle("ess-"+g.id,g.essential,"essential-toggle","Essential")}</label></div>
-    <div class="glist" data-group="${g.id}">${g.cats.map(c=>`<div class="swipe" data-cat="${c.id}"><button class="swipe-del" data-action="del-cat" data-id="${c.id}" tabindex="-1">Delete</button><div class="gi swipe-row"><span class="grip" aria-label="Drag to reorder ${esc(c.name)}" role="button" tabindex="0" data-grip="${c.id}">${grip}</span><input class="ginput ginput-wide" value="${esc(c.name)}" data-action="rename-cat" data-id="${c.id}" aria-label="Category name"><span class="gv">${money(m.assigned[c.id]||0,{whole:true})}</span><button class="iconbtn hover-only" data-action="del-cat" data-id="${c.id}" aria-label="Delete ${esc(c.name)}">${I.trash}</button></div></div>`).join("")}
-      <button class="gi gi-btn gi-add" data-action="add-cat-in" data-id="${g.id}">+ Add category</button>
-      ${S.budget.groups.length>1?`<button class="gi gi-btn gi-del" data-action="del-group" data-id="${g.id}">Delete ${esc(g.name)} group</button>`:""}</div></section>`).join("")}
+  const n=sum(S.budget.groups,g=>g.cats.length),tot=sum(allCats(),c=>m.assigned[c.id]||0);
+  const rta=round2((+m.income||0)-tot-(+m.assigned.fund||0)-debtPlannedFor(monthKey()));
+  return `<div class="topbar"><div><button class="btn ghost small backbtn desk-only" data-go="settings">‹ Settings</button><h1>Categories</h1><div class="sub">${n} categor${n===1?"y":"ies"} · ${money(tot,{whole:true})} budgeted a month${rta>0.5?` · <span class="paid">${money(rta,{whole:true})} not yet assigned</span>`:rta<-0.5?` · <span class="owed">${money(-rta,{whole:true})} over your income</span>`:""}</div></div><div class="actions desk-only"><button class="btn primary" data-action="add-group">Add group</button></div></div>
+  <div class="settings cats">
+  ${S.budget.groups.map(g=>{const gt=sum(g.cats,c=>m.assigned[c.id]||0);return `<section class="gsec">
+    <div class="cat-gh"><div class="cat-gt"><h2>${esc(g.name)}</h2>${g.essential?'<span class="pill fund">Essential</span>':""}</div><span class="cat-gsum">${money(gt,{whole:true})}/mo</span><button class="iconbtn" data-action="edit-group" data-id="${g.id}" aria-label="Edit ${esc(g.name)} group">⋯</button></div>
+    <div class="glist" data-group="${g.id}">${g.cats.map(c=>{const as=m.assigned[c.id]||0,sp=catSpent(c.id);return `<div class="swipe" data-cat="${c.id}"><button class="swipe-del" data-action="del-cat" data-id="${c.id}" tabindex="-1">Delete</button><div class="gi swipe-row"><span class="grip" aria-label="Drag to reorder ${esc(c.name)}" role="button" tabindex="0" data-grip="${c.id}">${grip}</span><button class="cat-row" data-action="edit-cat" data-id="${c.id}"><span class="cat-emo" aria-hidden="true">${catEmoji(c)}</span><span class="gl"><span>${esc(c.name)}</span><span class="gsub">${as?money(as,{whole:true})+" a month":"No budget set"}${sp?" · "+money(sp,{whole:true})+" spent":""}</span></span>${CHEV}</button></div></div>`}).join("")||'<div class="gi"><div class="gl"><div class="gsub">No categories yet.</div></div></div>'}
+      <button class="gi gi-btn gi-add" data-action="add-cat-in" data-id="${g.id}">+ Add category</button></div></section>`}).join("")}
+  <p class="gfoot">Essential groups count towards your emergency fund target. Drag ⋮⋮ to reorder, or swipe a category left to delete it.</p>
   </div>`;
+}
+function openCatSheet(catId,groupId){
+  const m=ensureMonth(monthKey());const c=catId?allCats().find(x=>x.id===catId):null;const g0=c?c.group.id:groupId||S.budget.groups[0].id;
+  let emo=c?catEmoji(c):"🏷️",emoSet=!!(c&&c.emoji);
+  const used=c?S.txns.filter(t=>t.catId===c.id).length:0;
+  openModal(`<h2>${c?"Edit category":"New category"}</h2>
+    <div class="field"><label for="ce-name">Name</label><input id="ce-name" value="${esc(c?.name||"")}" placeholder="e.g. Childcare" autocomplete="off"></div>
+    <div class="field"><span class="label" style="font-weight:600;color:var(--ink-2);font-size:13px">Icon</span><div class="emo-grid" role="radiogroup" aria-label="Icon">${EMOJI_SET.map(e=>`<button class="emo" role="radio" aria-checked="${e===emo}" data-emo="${e}">${e}</button>`).join("")}</div></div>
+    <div class="form-grid">
+      <div class="field"><label for="ce-amt">Monthly budget</label><div class="money-in"><span>${esc(curSymbol())}</span><input id="ce-amt" inputmode="decimal" value="${c&&m.assigned[c.id]?m.assigned[c.id]:""}" placeholder="0"></div></div>
+      <div class="field"><label for="ce-group">Group</label><select id="ce-group">${S.budget.groups.map(g=>`<option value="${g.id}" ${g.id===g0?"selected":""}>${esc(g.name)}</option>`).join("")}</select></div>
+    </div>
+    <div class="muted" id="ce-err" aria-live="polite">${c&&used?`${used} purchase${used>1?"s":""} logged here. `:""}The monthly budget applies from this month on.</div>
+    <div id="ce-del-zone"></div>
+    <div class="modal-actions">${c?'<button class="btn ghost danger" id="ce-del" style="margin-right:auto">Delete</button>':""}<button class="btn ghost" data-close>Cancel</button><button class="btn primary" id="ce-save">${c?"Save":"Add category"}</button></div>`,mm=>{
+    const nameIn=$("#ce-name");if(!c)nameIn.focus();
+    nameIn.addEventListener("input",()=>{if(!emoSet){const e=(EMOJI_RULES.find(([re])=>re.test(nameIn.value))||[0,"🏷️"])[1];emo=e;mm.querySelectorAll(".emo").forEach(b=>b.setAttribute("aria-checked",b.dataset.emo===emo))}});
+    mm.querySelector(".emo-grid").addEventListener("click",e=>{const b=e.target.closest("[data-emo]");if(!b)return;emo=b.dataset.emo;emoSet=true;mm.querySelectorAll(".emo").forEach(x=>x.setAttribute("aria-checked",x===b))});
+    const save=()=>{const name=nameIn.value.trim();if(!name){$("#ce-err").innerHTML='<span class="owed">Give the category a name.</span>';nameIn.focus();return}
+      const amt=parseMoney($("#ce-amt").value||0);const gid=$("#ce-group").value;if(isExample)leaveExampleSilently();
+      let cat;if(c){S.budget.groups.forEach(g=>{const i=g.cats.findIndex(x=>x.id===c.id);if(i>=0){cat=g.cats[i];if(g.id!==gid)g.cats.splice(i,1)}});if(c.group.id!==gid)S.budget.groups.find(g=>g.id===gid).cats.push(cat)}
+      else{cat={id:"c-"+uid()};S.budget.groups.find(g=>g.id===gid).cats.push(cat)}
+      cat.name=name;if(emoSet||!c)cat.emoji=emoSet?emo:undefined;
+      materialise(monthKey()).assigned[cat.id]=amt>=0?amt:0;
+      modalClose();commit();toast(c?"Saved "+name+".":"Added "+name+".")};
+    $("#ce-save").onclick=save;
+    mm.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.tagName==="INPUT"){e.preventDefault();save()}});
+    if(c)$("#ce-del").onclick=()=>{const others=allCats().filter(x=>x.id!==c.id);
+      $("#ce-del-zone").innerHTML=`<div class="note" style="display:flex;flex-direction:column;gap:10px"><strong>Delete ${esc(c.name)}?</strong>${used?`<label class="field"><span style="font-size:13px">Its ${used} purchase${used>1?"s":""}</span><select id="ce-move"><option value="">Delete them too</option>${others.map(o=>`<option value="${o.id}">Move to ${esc(o.name)}</option>`).join("")}</select></label>`:""}<div style="display:flex;gap:8px"><button class="btn danger" id="ce-del-yes">Delete category</button><button class="btn ghost" id="ce-del-no">Keep it</button></div></div>`;
+      $("#ce-del-no").onclick=()=>{$("#ce-del-zone").innerHTML=""};
+      $("#ce-del-yes").onclick=()=>{const to=$("#ce-move")?.value||"";const snap=JSON.stringify({groups:S.budget.groups,txns:S.txns});
+        S.budget.groups.forEach(g=>{g.cats=g.cats.filter(x=>x.id!==c.id)});S.txns=to?S.txns.map(t=>t.catId===c.id?{...t,catId:to}:t):S.txns.filter(t=>t.catId!==c.id);
+        if(isExample)leaveExampleSilently();modalClose();commit();toast("Deleted "+c.name+(to&&used?" and moved its purchases.":"."),()=>{const o=JSON.parse(snap);S.budget.groups=o.groups;S.txns=o.txns;commit()})};
+      $("#ce-del-zone").scrollIntoView({block:"nearest"})};
+  });
+}
+function openGroupSheet(groupId){
+  const g=groupId?S.budget.groups.find(x=>x.id===groupId):null;let ess=g?!!g.essential:false;
+  openModal(`<h2>${g?"Edit group":"New group"}</h2>
+    <div class="field"><label for="ge-name">Name</label><input id="ge-name" value="${esc(g?.name||"")}" placeholder="e.g. Family" autocomplete="off"></div>
+    <div class="glist" style="border:1px solid var(--line)"><div class="gi"><div class="gl"><div>Essential</div><div class="gsub">Counts towards your emergency fund target. Turn on for bills and everyday costs you can't skip.</div></div>${toggle("ge-ess",ess,"noop","Essential")}</div></div>
+    <div id="ge-del-zone"></div>
+    <div class="modal-actions">${g&&S.budget.groups.length>1?'<button class="btn ghost danger" id="ge-del" style="margin-right:auto">Delete group</button>':""}<button class="btn ghost" data-close>Cancel</button><button class="btn primary" id="ge-save">${g?"Save":"Add group"}</button></div>`,mm=>{
+    if(!g)$("#ge-name").focus();
+    $("#ge-ess").onclick=e=>{e.stopPropagation();ess=!ess;$("#ge-ess").setAttribute("aria-checked",ess)};
+    const save=()=>{const name=$("#ge-name").value.trim();if(!name){$("#ge-name").focus();return}if(isExample)leaveExampleSilently();
+      if(g){g.name=name;g.essential=ess}else S.budget.groups.push({id:"g-"+uid(),name,essential:ess,cats:[]});modalClose();commit();toast(g?"Saved "+name+".":"Added "+name+". Now add its categories.")};
+    $("#ge-save").onclick=save;mm.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.tagName==="INPUT"){e.preventDefault();save()}});
+    if(g&&$("#ge-del"))$("#ge-del").onclick=()=>{const n=g.cats.length,np=S.txns.filter(t=>g.cats.some(c=>c.id===t.catId)).length;
+      $("#ge-del-zone").innerHTML=`<div class="note" style="display:flex;flex-direction:column;gap:10px"><strong>Delete ${esc(g.name)}?</strong><span>${n?`Its ${n} categor${n>1?"ies":"y"}${np?` and ${np} purchase${np>1?"s":""}`:""} will be deleted too.`:"It has no categories."}</span><div style="display:flex;gap:8px"><button class="btn danger" id="ge-del-yes">Delete group</button><button class="btn ghost" id="ge-del-no">Keep it</button></div></div>`;
+      $("#ge-del-no").onclick=()=>{$("#ge-del-zone").innerHTML=""};
+      $("#ge-del-yes").onclick=()=>{const snap=JSON.stringify({groups:S.budget.groups,txns:S.txns});const ids=new Set(g.cats.map(c=>c.id));S.budget.groups=S.budget.groups.filter(x=>x.id!==g.id);S.txns=S.txns.filter(t=>!ids.has(t.catId));if(isExample)leaveExampleSilently();modalClose();commit();toast("Deleted "+g.name+".",()=>{const o=JSON.parse(snap);S.budget.groups=o.groups;S.txns=o.txns;commit()})}};
+  });
 }
 /* drag to reorder (pointer events, works with touch and mouse) */
 let drag=null;
@@ -1203,7 +1276,7 @@ document.addEventListener("pointerdown",e=>{
   const h=e.target.closest("[data-grip]");
   if(h){const row=h.closest(".swipe"),list=row.parentElement;drag={id:h.dataset.grip,row,list,y0:e.clientY,rows:[...list.querySelectorAll(".swipe")],moved:false};row.classList.add("dragging");h.setPointerCapture(e.pointerId);e.preventDefault();return}
   const sw=e.target.closest(".swipe-row");
-  if(sw&&!e.target.closest("input,button")){swipe={row:sw.parentElement,x0:e.clientX,y0:e.clientY,dx:0}}
+  if(sw&&!e.target.closest("input,[data-grip]")){swipe={row:sw.parentElement,x0:e.clientX,y0:e.clientY,dx:0}}
 });
 let swipe=null;
 document.addEventListener("pointermove",e=>{
@@ -1566,7 +1639,7 @@ function openTxnModal(catId){
   const cats=allCats();
   openModal(`<h2>Add spending</h2>
     <div class="field"><label for="t-amt">Amount</label><div class="money-in huge"><span>${esc(curSymbol())}</span><input id="t-amt" inputmode="decimal" autocomplete="off"></div></div>
-    <div class="form-grid"><div class="field"><label for="t-cat">Category</label><select id="t-cat">${S.budget.groups.map(g=>`<optgroup label="${esc(g.name)}">${g.cats.map(c=>`<option value="${c.id}" ${c.id===catId?"selected":""}>${esc(c.name)}</option>`).join("")}</optgroup>`).join("")}</select></div>
+    <div class="form-grid"><div class="field"><label for="t-cat">Category</label><select id="t-cat">${S.budget.groups.map(g=>`<optgroup label="${esc(g.name)}">${g.cats.map(c=>`<option value="${c.id}" ${c.id===catId?"selected":""}>${catEmoji(c)} ${esc(c.name)}</option>`).join("")}</optgroup>`).join("")}</select></div>
     <div class="field"><label for="t-date">Date</label><input id="t-date" type="date" value="${todayStr()}"></div>
     <div class="field full"><label for="t-note">What was it? (optional)</label><input id="t-note" placeholder="e.g. Weekly shop"></div></div>
     <div class="muted" id="t-err"></div>
@@ -1607,6 +1680,7 @@ function openCatModal(){
 
 /* ---------- events ---------- */
 document.addEventListener("click",e=>{
+  if(e.target.closest(".swipe.open .cat-row")){const sw=e.target.closest(".swipe");sw.classList.remove("open");sw.querySelector(".swipe-row").style.transform="";e.stopPropagation();return}
   if(e.target.matches("[data-overlay]")||e.target.closest("[data-close]")){modalClose&&modalClose();return}
   const g=e.target.closest("[data-go]");if(g){go(g.dataset.go);return}
   const b=e.target.closest("[data-action]");if(!b)return;const a=b.dataset.action;
@@ -1637,8 +1711,10 @@ document.addEventListener("click",e=>{
     case "del-cat":{const id=b.dataset.id;const used=S.txns.filter(t=>t.catId===id).length;const g=S.budget.groups.find(g=>g.cats.some(c=>c.id===id));const c=g.cats.find(c=>c.id===id);
       if(used&&b.dataset.confirm!=="1"){b.dataset.confirm="1";b.classList.add("danger-armed");b.innerHTML="Delete?";toast(c.name+" has "+used+" purchase"+(used>1?"s":"")+". Tap Delete? again to remove it and them.");break}
       const snap=JSON.stringify({groups:S.budget.groups,txns:S.txns});g.cats=g.cats.filter(x=>x.id!==id);S.txns=S.txns.filter(t=>t.catId!==id);if(isExample)leaveExampleSilently();commit();toast("Deleted "+c.name+".",()=>{const o=JSON.parse(snap);S.budget.groups=o.groups;S.txns=o.txns;commit()});break}
-    case "add-cat-in":{const g=S.budget.groups.find(x=>x.id===b.dataset.id);const id="c-"+uid();g.cats.push({id,name:"New category"});if(isExample)leaveExampleSilently();commit();const inp=document.querySelector('[data-action="rename-cat"][data-id="'+id+'"]');if(inp){inp.focus();inp.select()}break}
-    case "add-group":{const id="g-"+uid();S.budget.groups.push({id,name:"New group",essential:false,cats:[]});if(isExample)leaveExampleSilently();commit();const inp=document.querySelector('[data-action="rename-group"][data-id="'+id+'"]');if(inp){inp.focus();inp.select()}break}
+    case "add-cat-in":openCatSheet(null,b.dataset.id);break;
+    case "edit-cat":openCatSheet(b.dataset.id);break;
+    case "edit-group":openGroupSheet(b.dataset.id);break;
+    case "add-group":openGroupSheet(null);break;
     case "del-group":{const g=S.budget.groups.find(x=>x.id===b.dataset.id);if(g.cats.length&&b.dataset.confirm!=="1"){b.dataset.confirm="1";b.classList.add("danger-armed");toast("Tap the bin again to delete "+g.name+" and its "+g.cats.length+" categor"+(g.cats.length>1?"ies":"y")+".");break}
       const snap=JSON.stringify({groups:S.budget.groups,txns:S.txns});const ids=new Set(g.cats.map(c=>c.id));S.budget.groups=S.budget.groups.filter(x=>x.id!==g.id);S.txns=S.txns.filter(t=>!ids.has(t.catId));if(isExample)leaveExampleSilently();commit();toast("Deleted "+g.name+".",()=>{const o=JSON.parse(snap);S.budget.groups=o.groups;S.txns=o.txns;commit()});break}
     case "promo-prioritise":{const o=plan().order.filter(id=>id!==b.dataset.id);o.unshift(b.dataset.id);o.forEach((id,k)=>{const d=S.debts.find(x=>x.id===id);if(d)d.order=k});S.debts.forEach(d=>{if(!o.includes(d.id))d.order=o.length+1});S.strategy="custom";if(isExample)leaveExampleSilently();commit();const d=S.debts.find(x=>x.id===b.dataset.id);const pi=promoInfo(d);toast(pi&&pi.left>0.5?`${d.name} is now first. ${money(pi.left,{whole:true})} would still be left; add to your extra payment to close the gap.`:`${d.name} is now first and clears before its 0% ends.`);break}
