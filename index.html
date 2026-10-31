@@ -143,7 +143,9 @@ tr.group td:last-child{border-radius:0 8px 8px 0}
 .money-in.huge span{font-size:24px;left:14px}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .form-grid .full{grid-column:1/-1}
-.overlay{position:fixed;inset:0;background:rgba(10,14,22,.45);display:flex;align-items:center;justify-content:center;padding:16px;z-index:50}
+.overlay{position:fixed;inset:0;background:rgba(10,14,22,.45);display:flex;align-items:center;justify-content:center;padding:16px;z-index:50;overscroll-behavior:contain;touch-action:none}
+.overlay .modal{overscroll-behavior:contain;touch-action:pan-y;-webkit-overflow-scrolling:touch}
+body.sheet-open{position:fixed;left:0;right:0;overflow:hidden}
 .modal{background:var(--surface);border-radius:16px;width:min(520px,100%);max-height:calc(100% - 32px);overflow:auto;padding:22px;display:flex;flex-direction:column;gap:16px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
 .modal h2{font-size:21px}
 .modal-actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
@@ -1384,11 +1386,28 @@ function go(v){document.body.classList.remove("scrolled");view=v;try{history.rep
 
 /* ---------- modals ---------- */
 let modalClose=null;
+/* while a sheet is open the page behind it is pinned, so only the sheet scrolls */
+let lockedY=0;
+function lockScroll(){if(document.body.classList.contains("sheet-open"))return;lockedY=window.scrollY;document.body.style.top=-lockedY+"px";document.body.classList.add("sheet-open")}
+function unlockScroll(){if(!document.body.classList.contains("sheet-open"))return;document.body.classList.remove("sheet-open");document.body.style.top="";window.scrollTo(0,lockedY)}
+/* drag a sheet down to close it (phones), like a native sheet */
+function sheetSwipe(m,overlay){
+  if(!matchMedia("(max-width:760px)").matches)return;
+  let y0=0,t0=0,dy=0,active=false;
+  const scrolledInside=el=>{for(let n=el;n&&n!==overlay;n=n.parentElement){if(n.scrollTop>0)return true}return false};
+  m.addEventListener("touchstart",e=>{if(e.touches.length!==1||e.target.closest("input,select,textarea,.keys")||scrolledInside(e.target))return;y0=e.touches[0].clientY;t0=Date.now();dy=0;active=true;m.style.transition="none"},{passive:true});
+  m.addEventListener("touchmove",e=>{if(!active)return;dy=e.touches[0].clientY-y0;if(dy<=0){m.style.transform="";return}e.preventDefault();m.style.transform=`translateY(${dy}px)`;overlay.style.backgroundColor=`rgba(10,14,22,${Math.max(0,.45-dy/900)})`},{passive:false});
+  m.addEventListener("touchend",()=>{if(!active)return;active=false;const v=dy/Math.max(1,Date.now()-t0);
+    if(dy>120||(dy>40&&v>.6)){m.style.transition="transform .2s ease-in";m.style.transform="translateY(110%)";overlay.style.transition="background-color .2s";overlay.style.backgroundColor="rgba(10,14,22,0)";setTimeout(()=>modalClose&&modalClose(),190)}
+    else{m.style.transition="transform .2s cubic-bezier(.2,.8,.2,1)";m.style.transform="";overlay.style.backgroundColor=""}});
+}
 function openModal(html,onMount){
   $("#layer").innerHTML=`<div class="overlay" data-overlay><div class="modal" role="dialog" aria-modal="true">${html}</div></div>`;
   const prev=document.activeElement;
-  modalClose=()=>{$("#layer").innerHTML="";modalClose=null;prev&&prev.focus&&prev.focus()};
-  onMount&&onMount($("#layer .modal"));
+  lockScroll();
+  modalClose=()=>{$("#layer").innerHTML="";modalClose=null;unlockScroll();prev&&prev.focus&&prev.focus({preventScroll:true})};
+  const m=$("#layer .modal");sheetSwipe(m,$("#layer .overlay"));
+  onMount&&onMount(m);
 }
 function toast(msg,undo){
   clearTimeout(toastTimer);
