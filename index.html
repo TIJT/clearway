@@ -375,6 +375,35 @@ select.gselect{appearance:none;-webkit-appearance:none;border:0!important;backgr
 .tour-dot:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 @media (prefers-reduced-motion:no-preference){.tour-body{animation:tourin .25s ease-out}@keyframes tourin{from{transform:translateX(12px)}to{transform:none}}}
 .tour-offer{display:flex;align-items:center;gap:12px;padding:14px 16px}
+/* tour v5: hero band, large straight phone */
+.tour{padding:0!important;gap:0}
+.tour-hero{position:relative;background:linear-gradient(160deg,var(--hero-a),var(--hero-b) 65%,var(--hero-c));padding:calc(10px + env(safe-area-inset-top,0px)) 18px 0;border-radius:0 0 30px 30px;margin-bottom:56px;flex:none}
+.tour-hero .tour-motif{position:absolute;inset:40px 0 0;width:100%;height:calc(100% - 40px);color:rgba(255,255,255,.09);opacity:1;pointer-events:none}
+.tour-hero .tour-top{position:relative;z-index:1;color:#fff}
+.tour-hero .tour-brand{color:#fff}
+.tour-skip{all:unset;cursor:pointer;color:rgba(255,255,255,.9);font-weight:600;font-size:15px;padding:8px 6px}.tour-skip:focus-visible{outline:2px solid #fff;border-radius:6px}
+.tour-hero .tour-stage{height:auto;max-width:none;margin:10px 0 -56px;display:flex;justify-content:center;position:relative;z-index:1}
+.tour-hero .tour-phone{width:min(262px,67vw);height:clamp(300px,calc(100dvh - 340px),440px);transform:none;padding:10px 11px 8px;box-shadow:0 26px 50px rgba(5,30,22,.35),0 6px 14px rgba(5,30,22,.18)}
+.tour-phone .tp-screen{gap:9px;overflow:hidden;position:relative}
+.tour-phone .ta{font-size:12.5px;padding:12px}
+.tour-phone .ta-big{font-size:25px}.tour-phone .ta-h{font-size:13.5px}
+.ta-scr{padding:2px 4px 0;text-align:left}.ta-scr .ta-big{font-size:27px}
+.ta-num{width:20px;height:20px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-weight:700;font-size:11px;display:flex;align-items:center;justify-content:center;flex:none}
+.ta-mid{font-family:var(--display);font-size:18px}
+.tp-add{justify-content:flex-end!important}
+.ta-dim{position:absolute;inset:0;z-index:1;background:rgba(10,30,24,.28);border-radius:8px}
+.ta-sheet{position:relative;z-index:2;border-radius:18px 18px 12px 12px;margin-top:auto}
+.ta-grab{display:block;width:30px;height:4px;border-radius:4px;background:var(--line);margin:-4px auto 2px}
+.ta-toast{position:absolute;z-index:3;top:6px;left:50%;transform:translateX(-50%);white-space:nowrap;background:var(--surface);color:var(--paid);font-weight:700;font-size:12.5px;padding:7px 12px;border-radius:99px;box-shadow:0 8px 20px rgba(0,0,0,.18)}
+.ta-form label{display:flex;flex-direction:column;gap:3px;font-size:11px;color:var(--ink-3);font-weight:600}
+.ta-form label span{border:1px solid var(--line);border-radius:9px;padding:7px 9px;color:var(--ink);font-size:12.5px;font-weight:500}
+.ta-2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tour-copy{flex:1;padding-top:14px!important;display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:0 24px;max-width:460px;margin:0 auto;width:100%}
+.tour-copy h2{font-size:28px;letter-spacing:-.02em;line-height:1.1;margin:0}
+.tour-copy .tour-b{font-size:16px;line-height:1.5;color:var(--ink-2);max-width:32ch;margin:0}
+.tour-trust{display:flex;align-items:center;justify-content:center;gap:6px;margin:0 0 12px;font-size:13px;font-weight:600;color:var(--accent)}
+.tour .tour-foot,.tour .tour-end{padding:0 18px calc(14px + env(safe-area-inset-bottom,0px))}
+@media (max-height:700px){.tour-copy h2{font-size:24px}.tour-copy .tour-b{font-size:15px}.tour-hero{margin-bottom:46px}.tour-hero .tour-stage{margin-bottom:-46px}}
 .qa{all:unset;cursor:pointer;display:flex;align-items:center;gap:14px;padding:12px;border-radius:14px;background:var(--surface);border:1px solid var(--line)}
 .qa .gsub{color:var(--ink-2)}
 .qa:focus-visible{outline:2px solid var(--accent)}
@@ -1489,25 +1518,21 @@ const TOUR_KEY="clearway-tour";
 const tourSeen=()=>{try{return localStorage.getItem(TOUR_KEY)==="done"}catch(e){return false}};
 const markTour=()=>{try{localStorage.setItem(TOUR_KEY,"done")}catch(e){}};
 const TOUR=[
-  {art:"debts",ring:true,t:"List what you owe",b:"Tap the green <b>+</b> at the bottom, then <b>Add a debt</b>. Copy the balance, rate and minimum from your statement.",note:"Private by design: your numbers never leave this phone.",go:["debt","Add a debt now"]},
-  {art:"plan",float:"date",t:"See your debt-free date",b:"<b>Debts › Payoff plan</b> shows the month you'll be clear and which debt to pay first.",go:["plan","Open my plan"]},
-  {art:"add",ring:true,float:"tick",t:"Log payments in two taps",b:"Paid something? Tap <b>+</b>, then <b>Log a debt payment</b>. The amount is already filled in.",go:["pay","Log a payment"]},
-  {art:"budget",float:"left",t:"Know what's left to spend",b:"<b>Budget</b> shows what's left this month. Add your salary in <b>Pay &amp; tax</b> to fill in your income.",go:["budget","Open my budget"]},
-  {art:"fund",float:"saved",t:"Build a safety net",b:"Set a target in <b>Fund</b> and a monthly top-up. Clearway tells you when you'll get there.",go:["fund","Set my target"],last:true},
+  {art:"debts",ring:true,tab:"debts",t:"List what you owe",b:"Tap the green <b>+</b>, then <b>Add a debt</b>. Copy the balance, rate and minimum from your statement."},
+  {art:"plan",tab:"debts",t:"See your debt-free date",b:"Clearway works out when you'll be clear from your balances, rates and payments, and which debt to pay first."},
+  {art:"add",ring:true,t:"Log payments in two taps",b:"Paid something? Tap <b>+</b>, then <b>Log a debt payment</b>. The amount is already filled in."},
+  {art:"budget",tab:"budget",t:"Spend and save on purpose",b:"<b>Budget</b> shows what's left this month. <b>Fund</b> tracks your safety net and when it will be full."},
+  {art:"start",t:"Start with your first debt",b:"It takes about a minute. You can change anything later.",last:true},
 ];
-function tourFloat(k){
-  const p=plan();
-  const f={plus:'<span class="tf tf-plus">+</span>',date:`<span class="tf tf-card"><small>Debt-free</small>${p.done&&p.finish?mLabel(p.finish):"Jul 28"}</span>`,tick:'<span class="tf tf-card ok tf-top">✓ Payment logged</span>',left:'<span class="tf tf-card ok">✓ Under budget</span>',saved:`<span class="tf tf-card"><small>Saving</small>${money(fundMonthly()||150,{whole:true})}/mo</span>`}[k];
-  return f||"";
-}
 function tourArt(k){
-  const p=plan(),d=activeDebts().slice(0,3),m=ensureMonth(monthKey());
-  if(k==="debts")return `<div class="ta"><div class="ta-h">Your debts</div>${(d.length?d:[{name:"Credit card",_b:2145,original:2840},{name:"Car finance",_b:5695,original:7200}]).map(x=>{const bl=x._b??balance(x),pc=Math.round(Math.max(0,Math.min(1,1-bl/(x.original||bl||1)))*100);return `<div class="ta-row"><span class="ta-ring" style="--p:${pc}"><em>${pc}%</em></span><span class="ta-n"><span class="ta-nm">${esc(x.name)}</span><small>${pc}% paid</small></span><b>${money(bl,{whole:true})}</b></div>`}).join("")}<div class="ta-add">+ Add a debt</div></div>`;
-  if(k==="plan")return `<div class="ta ta-hero"><div class="ta-l">Debt-free date</div><div class="ta-big">${p.done&&p.finish?mLabel(p.finish,true):"July 2028"}</div><div class="ta-bar"><span style="width:${Math.max(8,Math.min(100,totalOriginal()?(1-totalOwed()/totalOriginal())*100:26)).toFixed(0)}%"></span></div><div class="ta-l">${p.months.length||21} months to go</div></div>`;
-  if(k==="add")return `<div class="ta"><div class="ta-h">What would you like to add?</div><div class="ta-qa on">Log a debt payment</div><div class="ta-qa">Add spending</div><div class="ta-qa">Update a balance</div></div>`;
-  if(k==="budget"){const cats=allCats().slice(0,2);return `<div class="ta"><div class="ta-l2">Left to spend this month</div><div class="ta-big ink">${money(Math.max(0,sum(allCats(),c=>Math.max(0,availableFor(c.id,monthKey())))),{whole:true})}</div><span class="ta-pill">On track</span>${cats.map(c=>{const as=m.assigned[c.id]||0,sp=spent(c.id,monthKey());return `<div class="ta-cat"><span>${catEmoji(c)} ${esc(c.name)}</span><div class="ta-bar sm"><span style="width:${as?Math.min(100,sp/as*100):0}%"></span></div></div>`}).join("")}</div>`}
-  if(k==="fund"){const b=fundBalance(),t=fundTarget()||1000;return `<div class="ta"><div class="ta-l2">Emergency fund</div><div class="ta-big ink">${money(b,{whole:true})} <small>of ${money(t,{whole:true})}</small></div><div class="ta-bar fund"><span style="width:${Math.min(100,b/t*100).toFixed(0)}%"></span></div><div class="ta-l2">Fully funded by <b style="color:var(--ink)">${(()=>{const e=fundEta(b,t,fundMonthly());return e?.done?"now":e?mLabel(e.idx,true):"—"})()}</b></div></div>`}
-  if(k==="safety")return `<div class="ta ta-lock"><div class="ta-lockic">${I.lock}</div><div class="ta-h" style="text-align:center">Clearway is locked</div><div class="ta-dots"><i></i><i></i><i></i><i></i></div><div class="ta-chips" style="justify-content:center"><span>Face ID</span><span>Backup to iCloud</span></div></div>`;
+  const p=plan(),act=activeDebts(),d=act.slice(0,3),m=ensureMonth(monthKey());
+  const demo=[{name:"Credit card",_b:2145,original:2840,apr:22.9},{name:"Car finance",_b:5695,original:7200,apr:9.9}];
+  if(k==="debts"){const list=d.length?d:demo,tot=d.length?totalOwed():sum(demo,x=>x._b);return `<div class="ta-scr"><div class="ta-l2">Total owed</div><div class="ta-big ink">${money(tot,{whole:true})}</div></div><div class="ta"><div class="ta-h">Your debts</div>${list.map(x=>{const bl=x._b??balance(x),pc=Math.round(Math.max(0,Math.min(1,1-bl/(x.original||bl||1)))*100);return `<div class="ta-row"><span class="ta-ring" style="--p:${pc}"></span><span class="ta-n"><span class="ta-nm">${esc(x.name)}</span><small>${pc}% paid</small></span><b>${money(bl,{whole:true})}</b></div>`}).join("")}<div class="ta-add">+ Add a debt</div></div>`}
+  if(k==="plan"){const ord=orderDebts((act.length?act:demo).map(x=>({name:x.name,b:x._b??balance(x),apr:+x.apr||0,order:x.order})),S.strategy).slice(0,3);return `<div class="ta ta-hero"><div class="ta-l">Debt-free date</div><div class="ta-big">${p.done&&p.finish?mLabel(p.finish,true):"July 2028"}</div><div class="ta-bar"><span style="width:${Math.max(8,Math.min(100,totalOriginal()?(1-totalOwed()/totalOriginal())*100:26)).toFixed(0)}%"></span></div><div class="ta-l">${p.months.length||21} months to go</div></div><div class="ta"><div class="ta-h">Pay off in this order</div>${ord.map((x,i)=>`<div class="ta-row"><span class="ta-num">${i+1}</span><span class="ta-n"><span class="ta-nm">${esc(x.name)}</span></span>${i===0?'<span class="ta-pill">Focus</span>':""}</div>`).join("")}</div>`}
+  if(k==="add")return `<div class="ta-dim"></div><div class="ta ta-sheet"><i class="ta-grab"></i><div class="ta-h">What would you like to add?</div><div class="ta-qa on">Log a debt payment</div><div class="ta-qa">Add spending</div><div class="ta-qa">Update a balance</div></div>`;
+  if(k==="budget"){const cats=allCats().slice(0,2),b=fundBalance(),t=fundTarget()||1000;return `<div class="ta"><div class="ta-l2">Left to spend this month</div><div class="ta-big ink">${money(Math.max(0,sum(allCats(),c=>Math.max(0,availableFor(c.id,monthKey())))),{whole:true})}</div>${cats.map(c=>{const as=m.assigned[c.id]||0,sp=spent(c.id,monthKey());return `<div class="ta-cat"><span>${catEmoji(c)} ${esc(c.name)}</span><div class="ta-bar sm"><span style="width:${as?Math.min(100,sp/as*100):0}%"></span></div></div>`}).join("")}</div><div class="ta"><div class="ta-l2">Emergency fund</div><div class="ta-row"><b class="ta-mid">${money(b,{whole:true})}</b><span class="ta-l2">of ${money(t,{whole:true})}</span></div><div class="ta-bar fund"><span style="width:${Math.min(100,b/t*100).toFixed(0)}%"></span></div></div>`}
+  if(k==="next"){const due=act.slice(0,3);return `<div class="ta-scr"><div class="ta-l2">Pay this month</div><div class="ta-big ink">${money(sum(due,x=>plannedThisMonth(x)),{whole:true})}</div></div><div class="ta"><div class="ta-h">Your payments</div>${due.map((x,i)=>`<div class="ta-row"><span class="ta-num">${i+1}</span><span class="ta-n"><span class="ta-nm">${esc(x.name)}</span></span><b>${money(plannedThisMonth(x),{whole:true})}</b></div>`).join("")}</div><div class="ta ta-hero"><div class="ta-l">Debt-free</div><div class="ta-big">${p.done&&p.finish?mLabel(p.finish,true):"—"}</div></div>`}
+  if(k==="start")return `<div class="ta-scr"><div class="ta-h">Add a debt</div></div><div class="ta ta-form"><label>Name<span>Credit card</span></label><label>Balance<span>${money(2145,{whole:true})}</span></label><div class="ta-2"><label>Rate<span>22.9%</span></label><label>Minimum<span>${money(64,{whole:true})}</span></label></div><div class="ta-qa on" style="text-align:center">Save debt</div></div>`;
   return "";
 }
 let tourStep=0;
@@ -1519,22 +1544,22 @@ function openTour(step){
 }
 function closeTour(){const el=document.getElementById("tour");if(el)el.remove();unlockScroll();render()}
 function drawTour(){
-  const el=document.getElementById("tour"),st=TOUR[tourStep],flip=tourStep%2===1;
-  const tab=(ic,on)=>`<span class="tpt${on?" on":""}">${I[ic]}</span>`;
-  el.innerHTML=`<div class="tour-bg" aria-hidden="true"><i></i><i></i><svg class="tour-motif${flip?" flip":""}" viewBox="0 0 400 300" preserveAspectRatio="none"><path d="M-10 270 C 80 250, 120 180, 190 190 S 300 120, 410 30" fill="none" stroke="currentColor" stroke-width="26" stroke-linecap="round"/></svg></div>
-  <div class="tour-top"><span class="tour-brand"><svg width="22" height="22" viewBox="0 0 26 26" aria-hidden="true"><rect width="26" height="26" rx="7" fill="var(--accent)"/><path d="M6 18 L11 12 L15 15 L20 8" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Clearway</span>${st.last?"":'<button class="btn ghost small" data-tour="skip">Skip</button>'}</div>
-  <div class="tour-body" aria-live="polite">
-    <div class="tour-stage${flip?" flip":""}" aria-hidden="true">
-      <div class="tour-phone"><div class="tp-status"><span>9:41</span><span class="tp-tag">${isExample?"Example numbers":"Your numbers"}</span></div><div class="tp-screen">${tourArt(st.art)}</div>
-        <div class="tp-tabs">${tab("overview",st.art==="plan"&&false)}${tab("debts",st.art==="debts"||st.art==="plan")}<b class="${st.ring?"ringed":""}">+</b>${tab("budget",st.art==="budget")}${tab("fund",st.art==="fund")}</div></div>
-      ${tourFloat(st.float)}
-    </div>
-    <h2>${st.t}</h2><p class="tour-b">${st.b}</p>${st.note?`<p class="tour-small">🔒 ${st.note}</p>`:""}
-    <button class="tour-link" data-tour="go">${st.go[1]} in the app <span aria-hidden="true">›</span></button>
+  const el=document.getElementById("tour"),hasD=!isExample&&activeDebts().length>0,st=TOUR[tourStep].last&&hasD?{...TOUR[tourStep],art:"next",t:"You're all set",b:"Log payments as you make them and watch your debt-free date move closer."}:TOUR[tourStep];
+  const tab=ic=>`<span class="tpt${st.tab===ic?" on":""}">${I[ic]}</span>`;
+  const lock='<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 10V7.5a4 4 0 0 1 8 0V10" fill="none" stroke="currentColor" stroke-width="2"/></svg>';
+  const finish=isExample?'<button class="btn primary" data-tour="own">Start with my own numbers</button>':(activeDebts().length?'<button class="btn primary" data-tour="go" data-go-to="plan">Open my payoff plan</button>':'<button class="btn primary" data-tour="go" data-go-to="debt">Add my first debt</button>');
+  el.innerHTML=`<div class="tour-hero">
+    <svg class="tour-motif" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true"><path d="M-10 280 C 90 260, 130 190, 200 196 S 310 120, 410 20" fill="none" stroke="currentColor" stroke-width="30" stroke-linecap="round"/></svg>
+    <div class="tour-top"><span class="tour-brand"><svg width="22" height="22" viewBox="0 0 26 26" aria-hidden="true"><rect width="26" height="26" rx="7" fill="#fff"/><path d="M6 18 L11 12 L15 15 L20 8" stroke="var(--hero-a)" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Clearway</span><button class="tour-skip" data-tour="skip">${st.last?"Close":"Skip"}</button></div>
+    <div class="tour-stage" aria-hidden="true"><div class="tour-phone"><div class="tp-status"><span>9:41</span>${isExample?'<span class="tp-tag">Sample numbers</span>':""}</div><div class="tp-screen tp-${st.art}">${tourArt(st.art)}</div>
+      <div class="tp-tabs">${tab("overview")}${tab("debts")}<b class="${st.ring?"ringed":""}">+</b>${tab("budget")}${tab("fund")}</div></div></div>
   </div>
-  <div class="tour-foot"><button class="btn ghost" data-tour="back" ${tourStep===0?"disabled":""}>Back</button>
+  <div class="tour-copy" aria-live="polite"><h2>${st.t}</h2><p class="tour-b">${st.b}</p></div>
+  <p class="tour-trust">${lock}Stays on this phone. No account, no sign-in.</p>
+  ${st.last?`<div class="tour-end">${finish}<button class="tour-link" data-tour="skip">I'll look around first</button></div>`:
+  `<div class="tour-foot"><button class="btn ghost" data-tour="back" ${tourStep===0?"disabled":""}>Back</button>
     <div class="tour-dots" role="tablist" aria-label="Tour steps">${TOUR.map((_,i)=>`<button class="tour-dot" data-tour-i="${i}" aria-label="Step ${i+1} of ${TOUR.length}" aria-current="${i===tourStep}"></button>`).join("")}</div>
-    ${st.last?'<button class="btn primary tour-next" data-tour="skip">Done</button>':'<button class="btn primary tour-next" data-tour="next">Next</button>'}</div>`;
+    <button class="btn primary tour-next" data-tour="next">Next</button></div>`}`;
 }
 document.addEventListener("click",e=>{
   if(e.target.closest("[data-action=start-tour]")){openTour(0);return}
@@ -1545,7 +1570,7 @@ document.addEventListener("click",e=>{
   else if(a==="back"){tourStep=Math.max(0,tourStep-1);drawTour()}
   else if(a==="skip")closeTour();
   else if(a==="own"){closeTour();leaveExample(true)}
-  else if(a==="go"){const g=TOUR[tourStep].go[0];closeTour();if(g==="debt")openDebtModal();else if(g==="pay")openPayModal();else go(g)}
+  else if(a==="go"){const g=b.dataset.goTo;closeTour();if(g==="debt")openDebtModal();else if(g==="pay")openPayModal();else go(g)}
 });
 document.addEventListener("keydown",e=>{if(!document.getElementById("tour"))return;if(e.key==="ArrowRight"&&tourStep<TOUR.length-1){tourStep++;drawTour()}else if(e.key==="ArrowLeft"&&tourStep>0){tourStep--;drawTour()}else if(e.key==="Escape")closeTour()},true);
 
