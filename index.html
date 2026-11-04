@@ -35,7 +35,7 @@
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#07120E; --surface:#0E1C17; --surface-2:#15271F; --line:#21382E;
-  --ink:#E5F2EB; --ink-2:#A1BBB0; --ink-3:#6D887C;
+  --ink:#E5F2EB; --ink-2:#A9C2B7; --ink-3:#86A094;
   --accent:#36C28C; --accent-soft:#0F3528; --on-accent:#04170E;
   --paid:#46DB9F; --paid-soft:#123A2B; --owed:#FF8B71; --owed-soft:#3E1F18; --warn:#F4C152; --warn-soft:#3A2D10;
   --fund:#4FC6D4; --fund-soft:#0F2F37; --gold:#7CF0B0;
@@ -43,7 +43,7 @@
   --shadow:0 1px 2px rgba(0,0,0,.35),0 8px 24px rgba(0,0,0,.25); color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#07120E; --surface:#0E1C17; --surface-2:#15271F; --line:#21382E;
-  --ink:#E5F2EB; --ink-2:#A1BBB0; --ink-3:#6D887C;
+  --ink:#E5F2EB; --ink-2:#A9C2B7; --ink-3:#86A094;
   --accent:#36C28C; --accent-soft:#0F3528; --on-accent:#04170E;
   --paid:#46DB9F; --paid-soft:#123A2B; --owed:#FF8B71; --owed-soft:#3E1F18; --warn:#F4C152; --warn-soft:#3A2D10;
   --fund:#4FC6D4; --fund-soft:#0F2F37; --gold:#7CF0B0;
@@ -168,11 +168,17 @@ body.sheet-open{position:fixed;left:0;right:0;overflow:hidden}
 .fab{display:none}
 .mobile-only{display:none}
 .topbar.has-gear{position:relative}.topbar.has-gear>div:first-of-type{padding-right:52px}.topbar .topgear{position:absolute;top:0;right:0;margin:0}
-@media (max-width:760px){.mobile-only{display:inline-flex}.desk-only{display:none!important}.settings{max-width:none}.gi{padding:10px 14px;flex-wrap:wrap}.gi .gl{min-width:150px}.gi>.seg{margin-left:auto}}
+@media (max-width:760px){.muted{font-size:13.5px}.mid.muted{font-size:20px}.label{font-size:13px}
+.stats.plan-out{margin-top:0;padding-top:0;border-top:0;padding-bottom:18px;margin-bottom:18px;border-bottom:1px solid var(--line)}
+.debtcard{grid-template-columns:repeat(3,minmax(0,1fr))!important;column-gap:10px;row-gap:10px;padding:16px 0}
+.debtcard .dc-name{grid-column:1/3!important}
+.debtcard .dc-act{grid-column:3!important;grid-row:1;justify-self:end!important;align-self:start}
+.debtcard>div:nth-child(2)>div:nth-child(2){font-size:19px!important;font-family:var(--display);font-weight:700!important}
+.mobile-only{display:inline-flex}.desk-only{display:none!important}.settings{max-width:none}.gi{padding:10px 14px;flex-wrap:wrap}.gi .gl{min-width:150px}.gi>.seg{margin-left:auto}}
 html{-webkit-text-size-adjust:100%;touch-action:manipulation}
 .settings{display:flex;flex-direction:column;gap:22px;max-width:720px}
 .hero{background:linear-gradient(135deg,var(--hero-a),var(--hero-b) 55%,var(--hero-c));color:#fff;border:0;position:relative;overflow:hidden;padding:22px 22px 20px}
-.hero-sub{color:rgba(255,255,255,.9);margin-top:4px;font-size:14.5px}
+.hero-sub{color:rgba(255,255,255,.9);margin-top:4px;font-size:14.5px}.hero-warn{display:block;margin-top:12px;background:#fff;color:#8A2E1E;font-weight:700;font-size:13.5px;padding:8px 12px;border-radius:10px;cursor:pointer}
 .hero-prog{margin-top:18px}.hero-prog .bar{height:10px;background:rgba(0,0,0,.18)!important}.hero-prog .bar>span{background:var(--gold)}
 .hero-legend{display:flex;justify-content:space-between;gap:8px;margin-top:8px;font-size:13px;color:rgba(255,255,255,.92)}
 .alerts{display:flex;flex-direction:column;gap:8px}
@@ -289,7 +295,7 @@ select.gselect{appearance:none;-webkit-appearance:none;border:0!important;backgr
 .nw-card:focus-visible{outline:2px solid var(--accent)}.nw-card:hover{border-color:var(--line)}
 .paybar{display:flex;height:14px;border-radius:99px;overflow:hidden;margin-top:18px;background:rgba(255,255,255,.18);gap:2px}
 .paybar span{display:block;height:100%}
-.paylink{margin-top:4px;color:var(--accent);background:var(--accent-soft);border-color:transparent;justify-content:flex-start}
+.paylink{all:unset;cursor:pointer;margin:2px 0 4px;color:var(--accent);font-weight:600;font-size:13.5px}.paylink:focus-visible{outline:2px solid var(--accent);border-radius:4px}
 .paytable td,.paytable th{white-space:nowrap}.paytotal td{font-weight:700;border-bottom:0}
 .pay-facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
 .pay-facts>div{display:flex;flex-direction:column;gap:2px}.pay-facts strong{font-size:16px}
@@ -929,7 +935,7 @@ function historyPoints(){
 
 /* ---------- views ---------- */
 function exampleBanner(){
-  if(!isExample)return "";
+  if(!isExample||view!=="overview")return "";
   return `<div class="note example"><div><strong>Example numbers.</strong> <span class="desk-only">Nothing is saved until you start.</span></div><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn small ghost" data-action="keep-example">Keep</button><button class="btn small primary" data-action="clear-example">Use my own</button></div></div>`;
 }
 function subnav(){return `<div class="seg subnav mobile-only" role="tablist" aria-label="Debts section"><button role="tab" aria-pressed="${view==="debts"}" data-go="debts">My debts</button><button role="tab" aria-pressed="${view==="plan"}" data-go="plan">Payoff plan</button></div>`}
@@ -964,18 +970,20 @@ function vOverview(){
   const nextOff=p.order.map(id=>S.debts.find(d=>d.id===id)).find(Boolean);
   const greeting=!S.debts.length&&!isExample;
   if(greeting)return topbar("Overview","")+`<div class="panel empty"><h2>Let's map what you owe</h2><p>Add each debt with its balance, interest rate and minimum payment. Clearway works out your debt-free date and the fastest order to pay them off.</p><button class="btn primary" data-action="add-debt">Add your first debt</button></div>`;
-  const promoAlerts=(S.alerts||{}).promo===false?[]:activeDebts().filter(d=>{const pi=promoInfo(d);return pi&&pi.left>0.5&&pi.monthsLeft<=6}).map(d=>{const pi=promoInfo(d);return ["bad",esc(d.name),`${money(pi.left,{whole:true})} will be left when ${fmtRate(d.promoApr)} ends in ${mLabel(pi.end,true)}. Pay about ${money(pi.need,{whole:true})} a month to clear it.`,"debts"]});
+  const heroPromo=activeDebts().find(d=>{const pi=promoInfo(d);return pi&&pi.left>0.5});
+  const promoAlerts=(S.alerts||{}).promo===false?[]:activeDebts().filter(d=>{const pi=promoInfo(d);return d!==heroPromo&&pi&&pi.left>0.5&&pi.monthsLeft<=6}).map(d=>{const pi=promoInfo(d);return ["bad",esc(d.name),`${money(pi.left,{whole:true})} will be left when ${fmtRate(d.promoApr)} ends in ${mLabel(pi.end,true)}. Pay about ${money(pi.need,{whole:true})} a month to clear it.`,"debts"]});
   const ns=suggestedNext();
   const nextCard=ns&&ns.amount>0?(()=>{const d=ns.debt,dt=nextDueDate(d);return `<section class="panel nextcard"><span class="nc-ic">${I.debts}</span><div class="nc-main"><div class="label">Next step</div><div class="nc-t">Pay ${money(ns.amount)} to ${esc(d.name)}</div><div class="muted">Due ${dt.getDate()} ${MONTHS[dt.getMonth()]}</div></div><button class="btn primary" data-action="pay-debt" data-id="${d.id}" data-amount="${ns.amount}">Pay</button></section>`})():"";
   return `${topbar("Overview",`${MONTHS_L[new Date().getMonth()]} ${new Date().getFullYear()}`,`${headIcons()}<button class="btn desk-only" data-action="add-debt">Add debt</button><button class="btn primary desk-only" data-action="log-payment">Log payment</button>`)}
-  ${exampleBanner()}
-  ${tourSeen()?"":`<section class="panel tour-offer"><span class="nc-ic">${I.overview}</span><div class="nc-main"><div class="nc-t">New to Clearway?</div><div class="muted">A one-minute tour of the app.</div></div><button class="btn primary small" data-action="start-tour">Take the tour</button><button class="iconbtn" data-action="dismiss-tour" aria-label="No thanks">✕</button></section>`}
+  ${isExample&&!tourSeen()?`<section class="panel tour-offer"><span class="nc-ic">${I.overview}</span><div class="nc-main"><div class="nc-t">These are example numbers</div><div class="muted">Take the one-minute tour, or start with yours.</div></div><div style="display:flex;flex-direction:column;gap:6px"><button class="btn primary small" data-action="start-tour">Take the tour</button><button class="btn small ghost" data-action="clear-example">Use my own</button></div></section>`:exampleBanner()}
+  ${tourSeen()||isExample?"":`<section class="panel tour-offer"><span class="nc-ic">${I.overview}</span><div class="nc-main"><div class="nc-t">New to Clearway?</div><div class="muted">A one-minute tour of the app.</div></div><button class="btn primary small" data-action="start-tour">Take the tour</button><button class="iconbtn" data-action="dismiss-tour" aria-label="No thanks">✕</button></section>`}
   <div class="grid g-hero">
     <div class="grid" style="gap:inherit;align-content:start">
     <section class="panel hero">
       <div class="label">Debt-free date</div>
       <div class="big" style="margin-top:4px">${p.done?esc(mLabel(p.finish,true)):owed>0?"Not on track":"Debt-free"}</div>
-      <div class="hero-sub">${p.done&&owed>0?`${p.months.length} months to go at ${money(p.budget,{whole:true})} a month`:owed>0?"Your minimums don't cover the interest. Raise a payment in your plan.":"Every debt is paid off. Nice work."}</div>
+      <div class="hero-sub">${p.done&&owed>0?`${p.months.length} months to go at ${money(p.budget,{whole:true})} a month${p.budget-sum(activeDebts(),d=>d.min)>0.5?` (${money(p.budget-sum(activeDebts(),d=>d.min),{whole:true})} above minimums)`:""}`:owed>0?"Your minimums don't cover the interest. Raise a payment in your plan.":"Every debt is paid off. Nice work."}</div>
+      ${(()=>{const r=activeDebts().map(d=>[d,promoInfo(d)]).find(([d,pi])=>pi&&pi.left>0.5);return r?`<div class="hero-warn" data-go="debts" role="link" tabindex="0">⚠ Plan leaves ${money(r[1].left,{whole:true})} on ${esc(r[0].name)} when ${fmtRate(r[0].promoApr)} ends</div>`:""})()}
       <div class="hero-prog"><div class="bar" role="progressbar" aria-valuenow="${Math.round(pct*100)}" aria-valuemin="0" aria-valuemax="100" aria-label="Debt paid off"><span style="width:${(pct*100).toFixed(1)}%"></span></div>
         <div class="hero-legend"><span><strong>${Math.round(pct*100)}%</strong> paid off · ${money(paid,{whole:true})}</span><span>${money(owed,{whole:true})} to go</span></div></div>
     </section>
@@ -1014,21 +1022,21 @@ function vOverview(){
   </div>`;
 }
 function activityRow(r){
-  if(r.kind==="pay"){const d=S.debts.find(x=>x.id===r.debtId);return `<div class="row"><span class="dot" style="background:${d?.color||"var(--ink-3)"}"></span><div class="main"><div class="name">${esc(d?.name||"Deleted debt")}</div><div class="muted">${fmtDate(r.date)} · Payment${r.note?" · "+esc(r.note):""}</div></div><span class="amt paid">−${money(r.amount)}</span><button class="btn ghost small" data-action="del-payment" data-id="${r.id}" aria-label="Delete payment">✕</button></div>`}
+  if(r.kind==="pay"){const d=S.debts.find(x=>x.id===r.debtId);return `<div class="row"><span class="dot" style="background:${d?.color||"var(--ink-3)"}"></span><div class="main"><div class="name">${esc(d?.name||"Deleted debt")}</div><div class="muted">${fmtDate(r.date)} · Payment${r.note?" · "+esc(r.note):""}</div></div><span class="amt">−${money(r.amount)}</span><button class="btn ghost small" data-action="del-payment" data-id="${r.id}" aria-label="Delete payment">✕</button></div>`}
   if(r.kind==="fund")return `<div class="row"><span class="dot" style="background:var(--fund)"></span><div class="main"><div class="name">${esc(S.fund.name)}</div><div class="muted">${fmtDate(r.date)} · ${r.amount>0?"Deposit":"Withdrawal"}${r.note?" · "+esc(r.note):""}</div></div><span class="amt fundc">${money(r.amount,{sign:true})}</span><button class="btn ghost small" data-action="del-fund" data-id="${r.id}" aria-label="Delete entry">✕</button></div>`;
   const c=allCats().find(c=>c.id===r.catId);return `<div class="row"><span class="dot" style="background:var(--ink-3)"></span><div class="main"><div class="name">${esc(r.note||c?.name||"Spending")}</div><div class="muted">${fmtDate(r.date)} · ${esc(c?.name||"")}</div></div><span class="amt">−${money(r.amount)}</span><button class="btn ghost small" data-action="del-txn" data-id="${r.id}" aria-label="Delete spending">✕</button></div>`;
 }
 function vDebts(){
   const p=plan();const ds=[...S.debts].sort((a,b)=>{const ia=p.order.indexOf(a.id),ib=p.order.indexOf(b.id);return (ia<0?999:ia)-(ib<0?999:ib)});
   const owed=totalOwed();
-  const dPromo=(S.alerts||{}).promo===false?[]:activeDebts().map(d=>[d,promoInfo(d)]).filter(([d,pi])=>pi&&pi.left>0.5).map(([d,pi])=>["bad",esc(d.name),`${money(pi.left,{whole:true})} will start costing ${fmtRate(d.apr)} in ${mLabel(pi.end+1,true)}. Pay about ${money(pi.need,{whole:true})} a month to clear it first.`,"debts"]);
-  return `${exampleBanner()}${subnav()}${checkCard(dPromo).replace(/data-go="debts"/g,"data-action=\"scroll-promo\"")}${topbar("Debts",`${activeDebts().length} open · ${money(owed)} owed · ${money(sum(activeDebts(),d=>d.min))} a month in minimums`,`<button class="btn primary" data-action="add-debt">Add debt</button>`)}
+  const dPromo=(S.alerts||{}).promo===false?[]:activeDebts().map(d=>[d,promoInfo(d)]).filter(([d,pi])=>pi&&pi.left>0.5).map(([d,pi])=>["bad",esc(d.name),`${money(pi.left,{whole:true})} will be left when ${fmtRate(d.promoApr)} ends in ${mLabel(pi.end,true)}. Pay about ${money(pi.need,{whole:true})} a month to clear it.`,"debts"]);
+  return `${exampleBanner()}${subnav()}${checkCard(dPromo).replace(/data-go="debts"/g,"data-action=\"scroll-promo\"")}${topbar("Debts",`${activeDebts().length} open · ${money(owed,{whole:true})} owed · ${money(sum(activeDebts(),d=>d.min),{whole:true})}/mo minimums`,`<button class="btn primary" data-action="add-debt">Add debt</button>`)}
   <section class="panel">${ds.length?ds.map((d,i)=>{const b=balance(d),pct=d.original?1-b/d.original:0;const done=b<=0.005;const po=p.paidOff[d.id];
-    return `<div class="debtcard"><div class="dc-name" style="display:flex;gap:12px;align-items:center;min-width:0">${ring(pct,"var(--paid)",46,6)}<div style="min-width:0"><div class="name" style="font-weight:600;font-size:15px">${esc(d.name)}</div><div class="muted">${esc(d.kind||"Debt")}${d.dueDay?` · due on the ${ordinal(d.dueDay)}`:""}</div><div style="margin-top:3px">${onPromo(d)?`<span class="pill good">${fmtRate(d.promoApr)} until ${mLabel(mIndex(d.promoEnd),true)}</span> <span class="muted" style="font-size:12.5px">then ${fmtRate(d.apr)}</span>`:`<span class="pill ${+d.apr>=20?"bad":+d.apr>=10?"warn":"neutral"}">${(+d.apr).toFixed(1)}% APR</span>`}</div></div></div>
-      <div><div class="label">Balance</div><div style="font-weight:600;font-size:16px">${money(b)}</div><div class="muted">${Math.round(pct*100)}% paid of ${money(d.original,{whole:true})}</div></div>
-      <div><div class="label">Minimum</div><div style="font-weight:600">${money(d.min)}</div><div class="muted">This month ${money(plannedThisMonth(d))}</div></div>
-      <div><div class="label">${done?"Status":"Paid off by"}</div>${done?`<span class="pill good">Paid off</span>`:po?`<div style="font-weight:600">${mLabel(po,true)}</div><div class="muted">#${p.order.indexOf(d.id)+1} in plan</div>`:`<span class="pill bad">Not on track</span>`}</div>
-      <div class="dc-act" style="display:flex;gap:6px">${done?"":`<button class="btn small primary" data-action="pay-debt" data-id="${d.id}">Pay</button>`}<button class="btn small" data-action="edit-debt" data-id="${d.id}">Edit</button></div>${promoNote(d)}</div>`}).join(""):`<div class="empty"><h2>No debts yet</h2><p>Add credit cards, loans, overdrafts, buy-now-pay-later or money owed to family. Anything with a balance you want gone.</p><button class="btn primary" data-action="add-debt">Add a debt</button></div>`}
+    return `<div class="debtcard"><div class="dc-name" style="display:flex;gap:12px;align-items:center;min-width:0">${ring(pct,"var(--paid)",46,6)}<div style="min-width:0"><div class="name" style="font-weight:600;font-size:15px">${esc(d.name)}</div><div class="muted">${[d.kind!==d.name?esc(d.kind||"Debt"):"",d.dueDay?`due on the ${ordinal(d.dueDay)}`:""].filter(Boolean).join(" · ").replace(/^d/,"D")}</div><div style="margin-top:3px">${onPromo(d)?`<span class="pill good">${fmtRate(d.promoApr)} until ${mLabel(mIndex(d.promoEnd),true)}</span> <span class="muted" style="font-size:12.5px">then ${fmtRate(d.apr)}</span>`:`<span class="pill ${+d.apr>=20?"bad":+d.apr>=10?"warn":"neutral"}">${(+d.apr).toFixed(1)}% APR</span>`}</div></div></div>
+      <div><div class="label">Balance</div><div style="font-weight:600;font-size:16px">${money(b)}</div><div class="muted">${Math.round(pct*100)}% paid off</div></div>
+      <div><div class="label">Minimum</div><div style="font-weight:600">${money(d.min)}</div><div class="muted">${(()=>{const t=plannedThisMonth(d);return done?"":t>=b-0.005?`${money(t)} clears it this month`:`Paying ${money(t)} this month`})()}</div></div>
+      <div><div class="label">${done?"Status":"Clear by"}</div>${done?`<span class="pill good">Paid off</span>`:po?`<div style="font-weight:600">${MONTHS[po%12]} ${Math.floor(po/12)}</div><div class="muted">#${p.order.indexOf(d.id)+1} in plan</div>`:`<span class="pill bad">Not on track</span>`}</div>
+      <div class="dc-act" style="display:flex;gap:6px">${done?"":`<button class="btn small primary" data-action="pay-debt" data-id="${d.id}">Pay</button>`}<button class="btn small ghost" data-action="edit-debt" data-id="${d.id}">Edit</button></div>${promoNote(d)}</div>`}).join(""):`<div class="empty"><h2>No debts yet</h2><p>Add credit cards, loans, overdrafts, buy-now-pay-later or money owed to family. Anything with a balance you want gone.</p><button class="btn primary" data-action="add-debt">Add a debt</button></div>`}
   </section>`;
 }
 function promoNote(d,compact){
@@ -1053,6 +1061,12 @@ function vPlan(){
   const vsMin=mins.done?`Compared with paying only minimums, you'll be debt-free <strong>${mins.months.length-p.months.length} months sooner</strong> and save <strong>${money(mins.totalInt-p.totalInt,{whole:true})}</strong> in interest.`:`Paying only minimums would never clear these debts. This plan does.`;
   return `${exampleBanner()}${subnav()}${topbar("Payoff plan","Pay the minimum on everything, then throw every spare penny at one debt at a time. When it's gone, its payment rolls onto the next.")}
   <section class="panel">
+    <div class="stats plan-out" style="grid-template-columns:repeat(4,minmax(0,1fr))">
+      <div class="stat"><span class="label">Debt-free</span><span class="mid">${p.done?mLabel(p.finish,true):"Never"}</span></div>
+      <div class="stat"><span class="label">Months to go</span><span class="mid">${p.done?p.months.length:"—"}</span></div>
+      <div class="stat"><span class="label">Interest you'll pay</span><span class="mid">${money(p.totalInt,{whole:true})}</span></div>
+      <div class="stat"><span class="label">First debt gone</span><span class="mid">${(()=>{const f=Math.min(...Object.values(p.paidOff));return isFinite(f)?`${MONTHS[f%12]} ${Math.floor(f/12)}`:"—"})()}</span></div>
+    </div>
     <div class="grid" style="grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px" id="plan-controls">
       <div class="field"><span class="label">Method</span><div class="seg" role="group" aria-label="Payoff method">${[["snowball","Snowball"],["avalanche","Avalanche"],["custom","My order"]].map(([k,l])=>`<button aria-pressed="${S.strategy===k}" data-action="strategy" data-v="${k}">${l}</button>`).join("")}</div>
         <div class="muted">${S.strategy==="snowball"?"Smallest balance first. Quick wins keep you going.":S.strategy==="avalanche"?"Highest interest rate first. Pays the least interest.":"Your own order. Use the arrows in the payoff order below."}</div></div>
@@ -1060,12 +1074,6 @@ function vPlan(){
         <div style="display:flex;gap:12px;align-items:center"><div class="money-in" style="width:130px"><span>${esc(curSymbol())}</span><input id="extra" inputmode="decimal" value="${S.extra}" data-action="extra-input"></div>
         <input type="range" id="extra-range" min="0" max="${Math.max(1000,Math.ceil(S.extra/100)*100)}" step="5" value="${S.extra}" data-action="extra-range" style="flex:1;accent-color:var(--accent)" aria-label="Extra monthly payment"></div>
         <div class="muted">Total to debts: <strong>${money(p.budget,{whole:true})}</strong> a month</div></div>
-    </div>
-    <div class="stats" style="grid-template-columns:repeat(4,minmax(0,1fr))">
-      <div class="stat"><span class="label">Debt-free</span><span class="mid">${p.done?mLabel(p.finish,true):"Never"}</span></div>
-      <div class="stat"><span class="label">Months to go</span><span class="mid">${p.done?p.months.length:"—"}</span></div>
-      <div class="stat"><span class="label">Interest you'll pay</span><span class="mid owed">${money(p.totalInt,{whole:true})}</span></div>
-      <div class="stat"><span class="label">First debt gone</span><span class="mid">${(()=>{const f=Math.min(...Object.values(p.paidOff));return isFinite(f)?mLabel(f,true):"—"})()}</span></div>
     </div>
   </section>
   <section class="panel"><div class="panel-head"><h2>Compare methods</h2><span class="muted">Same ${money(p.budget,{whole:true})} a month</span></div>
@@ -1136,7 +1144,7 @@ function vBudget(){
         <button class="btn small paylink" data-go="pay">${S.pay&&S.pay.salary?"Pay & tax: "+money(Math.round(calcPay(S.pay).net/12),{whole:true})+" take-home ›":"Work out my take-home pay ›"}</button>
         <div style="display:flex;justify-content:space-between"><span class="muted">Assigned</span><strong>${money(assignedCats+debtTotal)}</strong></div>
         <div style="display:flex;justify-content:space-between;align-items:center"><span class="${rta<-0.005?"owed":rta>0.005?"paid":"muted"}" style="font-weight:600">${rta<-0.005?"Over-assigned":"Ready to assign"}</span><strong class="${rta<-0.005?"owed":rta>0.005?"paid":""}">${money(rta)}</strong></div>
-        ${rta>0.005?`<div class="muted" style="font-size:12.5px">Give it a job: add it to a category, your fund, or the extra debt payment in your plan.</div>`:""}
+        ${rta>0.005?`<div class="muted" style="font-size:12.5px">Not in a category yet, so it isn't part of the amount left to spend. Give it a job: a category, your fund, or extra on your debts.</div>`:""}
       </div>
     </section>
     <section class="panel" style="display:flex;flex-direction:column;gap:14px">
@@ -1155,13 +1163,13 @@ function cellEdit(kind,id,val,big){
   return `<button class="cellbtn" data-action="edit-cell" data-key="${key}" style="${big?"font-weight:600":""}">${money(val)}</button>`;
 }
 function meter(c,tm,tone){
-  const max=Math.max(6,Math.ceil(tm||0),Math.ceil(c));const X=v=>(Math.min(v,max)/max*100).toFixed(2);
+  const max=Math.max(1,Math.ceil(tm||0),Math.ceil(c));const X=v=>(Math.min(v,max)/max*100).toFixed(2);
   const col=tone==="bad"?"var(--owed)":tone==="good"?"var(--paid)":"var(--fund)";
-  const ticks=[1,3,6,9,12].filter(v=>v<=max);
+  const ticks=[1,2,3,6,9,12].filter(v=>v<=max&&!(tm&&Math.abs(v-tm)<0.01&&v===max));
   return `<div style="position:relative;margin:18px 0 26px" aria-label="${c.toFixed(1)} of ${(tm||0).toFixed(1)} months covered" role="img">
     <div class="bar" style="height:14px"><span style="width:${X(c)}%;background:${col}"></span></div>
-    ${tm?`<div style="position:absolute;left:calc(${X(tm)}% - 1px);top:-5px;width:2px;height:24px;background:var(--ink)"></div><div style="position:absolute;left:${X(tm)}%;top:-22px;transform:translateX(-50%);font-size:11.5px;font-weight:600;white-space:nowrap">Target</div>`:""}
-    ${ticks.map(v=>`<div style="position:absolute;left:${X(v)}%;top:18px;transform:translateX(${v===max?"-100%":"-50%"});font-size:11.5px;white-space:nowrap" class="muted">${v} mo</div>`).join("")}
+    ${tm?`<div style="position:absolute;left:calc(${X(tm)}% - 1px);top:-5px;width:2px;height:24px;background:var(--ink)"></div><div style="position:absolute;left:${X(tm)}%;top:-22px;transform:translateX(${tm>=max-0.01?"-100%":"-50%"});font-size:11.5px;font-weight:600;white-space:nowrap">Target</div>`:""}
+    ${[].map(v=>`<div style="position:absolute;left:${X(v)}%;top:18px;transform:translateX(${v===max?"-100%":"-50%"});font-size:11.5px;white-space:nowrap" class="muted">${v} mo</div>`).join("")}
   </div>`;
 }
 function fundEta(b,t,mo){if(b>=t&&t>0)return {done:true};if(!(mo>0))return null;const n=Math.ceil((t-b)/mo);return {n,idx:nowIdx()+n}}
@@ -1185,11 +1193,12 @@ function vFund(){
       ${small?`<div class="label">Saved towards your target</div>
       <div style="display:flex;align-items:baseline;gap:10px;margin-top:6px;flex-wrap:wrap"><span class="big">${money(b,{whole:true})}</span><span class="mid muted" style="font-weight:500">of ${money(t,{whole:true})}</span></div>
       <div class="bar" style="height:14px;margin:16px 0 8px"><span style="width:${Math.min(100,t?b/t*100:0).toFixed(1)}%;background:var(--fund)"></span></div>
-      <div class="muted" style="margin-bottom:6px">${ess?`That covers about ${covers.toFixed(1)} months of essentials. Once you reach it, try for one full month (${money(ess,{whole:true})}).`:""}</div>`:`<div class="label">Months of essentials covered</div>
-      <div style="display:flex;align-items:baseline;gap:10px;margin-top:6px;flex-wrap:wrap"><span class="big ${tone==="bad"?"owed":""}">${covers.toFixed(1)}</span><span class="mid muted" style="font-weight:500">of ${(t/ess).toFixed(t/ess%1?1:0)} months</span></div>
-      ${meter(covers,t/ess,tone)}`}
-      ${small?`<div class="fund-sum"><div><span class="label">Fully funded</span><strong>${eta?.done?"Done":eta?mLabel(eta.idx,true):"No date yet"}</strong><span class="muted">${eta?.done?"Top it up after you use it":eta?`at ${money(mo,{whole:true})} a month`:"Set a monthly top-up"}</span></div><button class="btn small" data-action="edit-fund-target">Edit target</button></div>`:""}
-      <div class="stats" style="grid-template-columns:repeat(3,minmax(0,1fr))${small?";display:none":""}">
+      <div class="muted" style="margin-bottom:6px">${ess?`That covers about ${covers.toFixed(1)} months of essentials. Once you reach it, try for one full month (${money(ess,{whole:true})}).`:""}</div>`:`<div class="label">Saved towards your target</div>
+      <div style="display:flex;align-items:baseline;gap:10px;margin-top:6px;flex-wrap:wrap"><span class="big">${money(b,{whole:true})}</span><span class="mid muted" style="font-weight:500">of ${money(t,{whole:true})}</span></div>
+      ${meter(covers,t/ess,tone)}
+      <div class="muted" style="margin-top:-14px;margin-bottom:6px">Covers ${covers.toFixed(1)} of ${(t/ess).toFixed(t/ess%1?1:0)} months of essentials</div>`}
+      ${`<div class="fund-sum"><div><span class="label">Fully funded</span><strong>${eta?.done?"Done":eta?mLabel(eta.idx,true):"No date yet"}</strong><span class="muted">${eta?.done?"Top it up after you use it":eta?`at ${money(mo,{whole:true})} a month`:"Set a monthly top-up"}</span></div><button class="btn small" data-action="edit-fund-target">Edit target</button></div>`}
+      <div class="stats" style="grid-template-columns:repeat(3,minmax(0,1fr));display:none">
         <div class="stat"><span class="label">Saved</span><span class="mid">${money(b,{whole:true})}</span><span class="muted">in the fund now</span></div>
         <div class="stat"><span class="label">Target</span><span class="mid">${money(t,{whole:true})}</span><span class="muted">${left>0?money(left,{whole:true})+" to go":"reached"}</span></div>
         <div class="stat"><span class="label">Fully funded</span><span class="mid">${eta?.done?"Done":eta?mLabel(eta.idx,true):"No date"}</span><span class="muted">${eta?.done?"Top up after you use it":eta?`at ${money(mo,{whole:true})} a month`:"Set a monthly top-up"}</span></div>
@@ -1219,7 +1228,7 @@ function vActivity(){
   const all=[...S.payments.map(x=>({kind:"pay",...x})),...S.fund.entries.map(x=>({kind:"fund",...x})),...S.txns.map(x=>({kind:"txn",...x}))].filter(r=>actFilter==="all"||r.kind===actFilter).sort((a,b)=>b.ts-a.ts);
   const groups={};all.forEach(r=>{const k=r.date.slice(0,7);(groups[k]=groups[k]||[]).push(r)});
   return `${exampleBanner()}${topbar("Activity","Every payment, deposit and purchase you've logged.",`<button class="btn" data-action="add-txn">Add spending</button><button class="btn primary" data-action="log-payment">Log payment</button>`)}
-  <div class="seg" role="group" aria-label="Filter">${[["all","All"],["pay","Debt payments"],["txn","Spending"],["fund","Emergency fund"]].map(([k,l])=>`<button aria-pressed="${actFilter===k}" data-action="act-filter" data-v="${k}">${l}</button>`).join("")}</div>
+  <div class="seg" role="group" aria-label="Filter">${[["all","All"],["pay","Debts"],["txn","Spending"],["fund","Fund"]].map(([k,l])=>`<button aria-pressed="${actFilter===k}" data-action="act-filter" data-v="${k}">${l}</button>`).join("")}</div>
   ${Object.keys(groups).length?Object.entries(groups).map(([k,rows])=>`<section class="panel"><div class="panel-head"><h2>${mLabel(mIndex(k),true)}</h2><span class="muted">${rows.length} entr${rows.length>1?"ies":"y"}</span></div><div class="list">${rows.map(activityRow).join("")}</div></section>`).join(""):`<div class="panel empty"><h2>Nothing logged yet</h2><p>Log a debt payment or some spending and it shows up here.</p></div>`}`;
 }
 const CHEV='<svg class="chev" viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 5l5 5-5 5"/></svg>';
